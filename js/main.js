@@ -8,19 +8,29 @@ function start(){
 }
 
 // Aspetta che sia tutto pronto e poi dà il via al gioco
+function atDocumentReady(){
+  mGame.setCanvas(document.getElementById('game_canvas'));
+  mGame.drawMessage("Loading...");
+
+  document.onkeyup = onKeyUpHandler;
+  document.onkeydown = onKeyDownHandler;
+
+  window.onresize = function(){
+    var w = mGame.resize(window.innerWidth, window.innerHeight);
+    document.getElementById('game_area').style.width = w+'px';
+  };
+
+  var w = mGame.resize(window.innerWidth, window.innerHeight);
+  document.getElementById('game_area').style.width = w+'px';
+  init();
+}
+
 function init(){
   if (mLoader.getProgress()<100)
     setTimeout("init()", 100);
   else{
-    mGame.setCanvas(document.getElementById('game_canvas'));
+    mGame.drawMessage("Click here to start");
     mGame.canvas.onclick = start;
-    document.onkeyup = onKeyUpHandler;
-    document.onkeydown = onKeyDownHandler;
-    window.onresize = function(){
-      mGame.resize(window.innerWidth, window.innerHeight);
-    };
-    mGame.resize(window.innerWidth, window.innerHeight);
-    document.getElementById('loading').style.display = 'none';
 
     mGame.onEnd = function(){
       var livesP = document.getElementById("lives");

@@ -492,13 +492,13 @@ function Game(){
     clearInterval(loopInterval);
 
     var fontSize = Math.floor(50 * this.canvas.width/Game.WIDTH);
-    this.context.font = fontSize + 'px "Press Start 2P"'; //Press Start 2P
+    this.context.font = fontSize + 'px Press-Start-2P'; //Press Start 2P
     this.context.textAlign = 'center';
     this.context.fillStyle = '#FFFFFF';
     this.context.fillText('GAME OVER', this.canvas.width/2, this.canvas.height/2);
 
     // SCORE
-    this.context.font = fontSize/2 + 'px "Press Start 2P"';
+    this.context.font = fontSize/2 + 'px "Press-Start-2P"';
     this.context.fillText('YOUR SCORE: ' + this.score, this.canvas.width/2, this.canvas.height/2+fontSize);
 
     mLoader.get('assets/death.wav').play();
@@ -722,7 +722,7 @@ function Game(){
   };
 
   this.resize = function(width, height){
-    var SCALE = 0.8;
+    var SCALE = 0.7;
     //console.log(width + " x " + height);
     var w, h;
     if (width/height > Game.WIDTH/Game.HEIGHT){
@@ -733,12 +733,33 @@ function Game(){
       h = width * Game.HEIGHT/Game.WIDTH * SCALE;
     }
     if (w !== undefined && !isNaN(w) && h !== undefined && !isNaN(h)){
-      this.canvas.style.marginLeft  = (width - w - 15)/2 + 'px';
-      this.canvas.style.marginRight = (width - w - 15)/2 + 'px';
+      // this.canvas.style.marginLeft  = (width - w - 15)/2 + 'px';
+      // this.canvas.style.marginRight = (width - w - 15)/2 + 'px';
       this.canvas.width = w;
       this.canvas.height = h;
       console.log(w + " x " + h);
+      return w;
     }
+    return -1;
+  }
+
+  this.drawMessage = function(text){
+    var x = this.canvas.width / 2;
+    var y = this.canvas.height / 2;
+
+    // pulisco tutto
+    this.context.clearRect(0, 0,
+      this.canvas.width,
+      this.canvas.height
+    );
+
+    // disegno
+    this.context.save();
+    this.context.font = '30px Press-Start-2P';
+    this.context.textAlign = 'center';
+    this.context.fillStyle = 'white';
+    this.context.fillText(text, x, y, this.canvas.width);
+    this.context.restore();
   }
 }
 

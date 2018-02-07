@@ -3,6 +3,7 @@ var keyboard = new Array(256);
 for (var i = 0; i<255; i++){
   keyboard[i] = false;
 }
+
 // Codici dei tasti della tastiera
 var LEFT_KEY = 37;
 var UP_KEY = 38;
