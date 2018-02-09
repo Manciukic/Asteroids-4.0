@@ -23,6 +23,7 @@ function onKeyDownHandler(e){
   if (key >= 0 && key < 256)
       keyboard[key] = true;
 }
+document.onkeydown = onKeyDownHandler;
 
 function onKeyUpHandler(e){
   e = (!e) ? window.event: e; //Explorer -> !e
@@ -30,3 +31,4 @@ function onKeyUpHandler(e){
   if (key >= 0 && key < 256)
       keyboard[key] = false;
 }
+document.onkeyup = onKeyUpHandler;

@@ -491,15 +491,12 @@ function Game(){
   this.end = function(){
     clearInterval(loopInterval);
 
-    var fontSize = Math.floor(50 * this.canvas.width/Game.WIDTH);
-    this.context.font = fontSize + 'px Press-Start-2P'; //Press Start 2P
-    this.context.textAlign = 'center';
-    this.context.fillStyle = '#FFFFFF';
-    this.context.fillText('GAME OVER', this.canvas.width/2, this.canvas.height/2);
-
-    // SCORE
-    this.context.font = fontSize/2 + 'px "Press-Start-2P"';
-    this.context.fillText('YOUR SCORE: ' + this.score, this.canvas.width/2, this.canvas.height/2+fontSize);
+    this.drawMessage('GAME OVER', 50, false);
+    this.drawSubMessage('PUNTEGGIO: ' + this.score, 25, 50);
+    this.drawSubMessage('Clicca di nuovo per rigiocare', 12, 220);
+    if(this.score > highscore){
+      this.drawSubMessage('NUOVO RECORD', 25, -100);
+    }
 
     mLoader.get('assets/death.wav').play();
 
@@ -665,6 +662,8 @@ function Game(){
       }
     }
 
+    var scoreChanged = false;
+    var livesChanged = false;
     // Controllo delle collisioni
     // Con navicella
     if (!this.ship.dead){
@@ -673,12 +672,14 @@ function Game(){
         var shipCollision = collides(this.ship, this.asteroids);
         if (shipCollision != -1){
           this.ship.dead = true;
+          livesChanged = true;
           this.explosions.push(new Explosion(
                   this.ship.position.x,
                   this.ship.position.y,
                   'large')
           );
           this.destroyAsteroid(shipCollision, this.ship.position.theta);
+          scoreChanged = true;
         }
       } else{
         if (this.immunityCounter > 0)
@@ -694,6 +695,7 @@ function Game(){
         var theta = this.bullets[i].position.theta;
         this.bullets.splice(i,1); //rimuovi il proiettile
         this.destroyAsteroid(bulletCollision, theta);
+        scoreChanged = true;
       }
     }
 
@@ -718,7 +720,7 @@ function Game(){
     }
 
     if(this.onLoop != null)
-      this.onLoop();
+      this.onLoop(scoreChanged, livesChanged);
   };
 
   this.resize = function(width, height){
@@ -743,19 +745,38 @@ function Game(){
     return -1;
   }
 
-  this.drawMessage = function(text){
+  this.drawMessage = function(text, fontSize, wipe){
     var x = this.canvas.width / 2;
     var y = this.canvas.height / 2;
 
+    fontSize = Math.floor(fontSize * this.canvas.width/Game.WIDTH);
+
     // pulisco tutto
-    this.context.clearRect(0, 0,
-      this.canvas.width,
-      this.canvas.height
-    );
+    if(wipe){
+      this.context.clearRect(0, 0,
+        this.canvas.width,
+        this.canvas.height
+      );
+    }
 
     // disegno
     this.context.save();
-    this.context.font = '30px Press-Start-2P';
+    this.context.font = fontSize + 'px Press-Start-2P';
+    this.context.textAlign = 'center';
+    this.context.fillStyle = 'white';
+    this.context.fillText(text, x, y, this.canvas.width);
+    this.context.restore();
+  }
+
+  this.drawSubMessage = function(text, fontSize, verticalShift){
+    var x = this.canvas.width / 2;
+    var y = this.canvas.height / 2 + verticalShift;
+
+    fontSize = Math.floor(fontSize * this.canvas.width/Game.WIDTH);
+
+    // disegno
+    this.context.save();
+    this.context.font = fontSize + 'px Press-Start-2P';
     this.context.textAlign = 'center';
     this.context.fillStyle = 'white';
     this.context.fillText(text, x, y, this.canvas.width);

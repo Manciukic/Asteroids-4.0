@@ -1,51 +1,79 @@
 // Inizializzo l'oggetto Game
 var mGame = new Game();
 
+// aggiorna il punteggio
+function updateScore(score){
+  var scoreP = document.getElementById("score");
+  var n_space = 0;
+  var spaces = "";
+  if (score == 0){
+    spaces = "    ";
+  } else {
+    while (score < Math.pow(10, 4-n_space)){
+      n_space++;
+      spaces += " ";
+    }
+  }
+  var record_string = loggedIn?("[RECORD " + highscore + "] "):"";
+  scoreP.textContent = record_string + "PUNTI "+ spaces + score;
+}
+
+// aggiorna il numero di vite
+function updateLives(lives){
+  var livesP = document.getElementById("lives");
+  livesP.textContent = "VITE " + lives;
+}
+
+function resizeGame(){
+  var w = mGame.resize(window.innerWidth, window.innerHeight);
+  document.getElementById('game_area').style.width = w+'px';
+}
+window.onresize = resizeGame;
+
 // Inizia il gioco
 function start(){
+  //aggiorna il punteggio massimo
+  updateScore(mGame.score);
   mGame.canvas.onclick = null;
+  mGame.canvas.style.cursor = "none";
   mGame.start();
 }
 
 // Aspetta che sia tutto pronto e poi dà il via al gioco
-function atDocumentReady(){
+window.onload = function(){
   mGame.setCanvas(document.getElementById('game_canvas'));
-  mGame.drawMessage("Loading...");
+  mGame.drawMessage("Caricamento...", 50, true);
 
-  document.onkeyup = onKeyUpHandler;
-  document.onkeydown = onKeyDownHandler;
-
-  window.onresize = function(){
-    var w = mGame.resize(window.innerWidth, window.innerHeight);
-    document.getElementById('game_area').style.width = w+'px';
-  };
-
-  var w = mGame.resize(window.innerWidth, window.innerHeight);
-  document.getElementById('game_area').style.width = w+'px';
+  resizeGame();
   init();
-}
+};
 
 function init(){
   if (mLoader.getProgress()<100)
     setTimeout("init()", 100);
   else{
-    mGame.drawMessage("Click here to start");
+    mGame.drawMessage("Clicca qui per iniziare", 20, true);
+    if(!loggedIn)
+      mGame.drawSubMessage("Accedi o registrati per salvare il punteggio", 10, 20);
     mGame.canvas.onclick = start;
 
     mGame.onEnd = function(){
-      var livesP = document.getElementById("lives");
-      livesP.textContent = "LIVES " + 0;
+      updateLives(0);
+
+      if (mGame.score > highscore)
+        highscore = mGame.score;
+
+      //TODO upload score
 
       mGame.reset();
       mGame.canvas.onclick = start;
+      mGame.canvas.style.cursor = "auto";
+
     };
 
-    mGame.onLoop = function (){
-      var scoreP = document.getElementById("score");
-      scoreP.textContent = "SCORE " + mGame.score;
-
-      var livesP = document.getElementById("lives");
-      livesP.textContent = "LIVES " + mGame.ship.lives;
+    mGame.onLoop = function (scoreChanged, livesChanged){
+      if (scoreChanged) updateScore(mGame.score);
+      if (livesChanged) updateLives(mGame.ship.lives);
     };
   }
 }

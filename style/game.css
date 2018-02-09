@@ -1,0 +1,17 @@
+/* Game page */
+
+#game_area{
+  margin: 0 auto;
+}
+
+#game_canvas {
+  border: 2px solid white;
+  background-color: #120A1A;
+}
+
+.game_info{
+  display: inline;
+  color: white;
+  padding: 5px;
+  margin-top: 0;
+}

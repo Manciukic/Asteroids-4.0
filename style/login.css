@@ -1,0 +1,82 @@
+/* Login */
+form{
+  width: 50%;
+  min-width: 400px;
+  margin: 0 auto;
+  font-size: 0.9em;
+  color: black;
+  background-color: #c3a8dd;
+  padding: 7%;
+
+  /* Ombra */
+  box-shadow: 0 2px 5px rgba(0,0,0,.26);
+  -moz-box-shadow: 0 2px 5px rgba(0,0,0,.26);
+  -webkit-box-shadow: 0 2px 5px rgba(0,0,0,.26);
+}
+
+.form-item{
+  display: block;
+  width: 100%;
+  padding: 1%;
+}
+
+.form-item label{
+  display: inline-block;
+  width: 30%;
+  padding: 1%;
+  text-align: right;
+}
+
+.form-item input{
+  display: inline-block;
+  font-family: 'Press-Start-2P';
+  width: 58%;
+  padding: 1%;
+}
+
+.form-item input:invalid{
+  margin: 2px solid red;
+}
+
+button{
+  display: block;
+  background-color: #261536;
+  color: white;
+  border: none;
+  font-family: 'Press-Start-2P';
+  font-size: 1.5em;
+  padding: 10px;
+  margin: 10px auto;
+  cursor: pointer;
+  border: 1px solid #261536;
+}
+
+button:hover{
+  background-color: #c3a8dd;
+  color: black;
+}
+
+form a{
+  display: block;
+  width: 100%;
+  margin-top: 20px;
+  text-decoration: none;
+  font-size: 0.8em;
+  text-align: center;
+}
+
+form a:hover{
+  color: black;
+}
+
+#error{
+  display: none;
+  border: 3px solid red;
+  color: #e50406;
+  width: 100%;
+  text-align: center;
+  padding: 10px;
+  background-color: #fff229;
+  margin: 0;
+  margin-bottom: 20px;
+}
