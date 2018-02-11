@@ -9,8 +9,9 @@
     include_once("includes/header.php");
 ?>
   <main>
-    <form name="register" action="register.php" method="POST" onsubmit="return validateForm()">
-      <p id="error"><?php echo $message;?></p>
+    <form name="register" action="register.php" method="POST" onsubmit="return validateForm();">
+      <h2>Registrazione</h2>
+      <p id="error"><?php echo $message != ''?$message:"Dummy error";?></p>
       <div class="form-item">
         <label for="username">Username</label>
         <input type="text" placeholder="Username" name="username" required>
@@ -46,12 +47,19 @@
   }
 
   if (isset($_POST['username']) && isset($_POST['password'])){
+    if (!preg_match('/^[A-Za-z0-9]{4,10}$/', $_POST['username'])){
+      no_login("L'username deve contenere da 4 a 10 caratteri alfanumerici");
+    } else if (!preg_match('/^[A-Za-z0-9\-_]{8,}$/', $_POST['password'])){
+      no_login("La password deve contenere almeno 8 caratteri alfanumerici (sono ammessi anche - e _)");
+    } else{
       include_once("includes/db_helper.php");
       $db = new DBHelper;
-      if ($db->register($_POST['username'], $_POST['password']))
+      if ($db->register($_POST['username'], $_POST['password'])){
         ok_register();
-      else
+      } else
         no_register('Username gi&agrave; in uso');
+      $db->close();
+    }
   } else
     no_register('');
 ?>

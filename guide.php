@@ -31,7 +31,7 @@
         <p>Ogni volta che un drone viene piazzato sulla mappa, esso &egrave; immune dagli urti per 1,5 secondi.</p>
       <h3>Asteroidi</h3>
         <p>Esistono tre tipologie di asteroidi: grandi, medi e piccoli.</p>
-        <p>All'inizio della partite e ogni volta che vengono distrutti tutti gli asteroidi, compariranno un certo numero di asteroidi grandi (vedi sotto per sapere ul numero corretto). Ogni volta che un asteroide grande o medio viene colpito, questo si frammenta in due asteroidi medi o piccoli, rispettivamente.</p>
+        <p>All'inizio della partite e ogni volta che vengono distrutti tutti gli asteroidi, compariranno un certo numero di asteroidi grandi (vedi sotto per sapere il numero corretto). Ogni volta che un asteroide grande o medio viene colpito, questo si frammenta in due asteroidi medi o piccoli, rispettivamente.</p>
         <p>Inizialmente il livello &egrave; pari ad 1 e aumenta ogni volta che vengono distrutti tutti gli asteroidi.</p>
         <img id="asteroid-img" class="right" src="img/asteroids.png" alt="Asteroidi">
         <ul>

@@ -575,6 +575,9 @@ function Game(){
 
   // main game loop
   this.loop = function (){
+    var scoreChanged = false;
+    var livesChanged = false;
+
     //Check fine gioco
     if (this.ship.dead){
       if (this.ship.lives <= 1){
@@ -588,6 +591,7 @@ function Game(){
         } else{
           this.respawnCounter = RESPAWN_INTERVAL;
           this.ship.respawn();
+          livesChanged = true;
           this.immunityCounter --;  // inizia l'immunità
         }
       }
@@ -662,8 +666,6 @@ function Game(){
       }
     }
 
-    var scoreChanged = false;
-    var livesChanged = false;
     // Controllo delle collisioni
     // Con navicella
     if (!this.ship.dead){
@@ -672,7 +674,6 @@ function Game(){
         var shipCollision = collides(this.ship, this.asteroids);
         if (shipCollision != -1){
           this.ship.dead = true;
-          livesChanged = true;
           this.explosions.push(new Explosion(
                   this.ship.position.x,
                   this.ship.position.y,
@@ -743,7 +744,7 @@ function Game(){
       return w;
     }
     return -1;
-  }
+  };
 
   this.drawMessage = function(text, fontSize, wipe){
     var x = this.canvas.width / 2;
@@ -766,7 +767,7 @@ function Game(){
     this.context.fillStyle = 'white';
     this.context.fillText(text, x, y, this.canvas.width);
     this.context.restore();
-  }
+  };
 
   this.drawSubMessage = function(text, fontSize, verticalShift){
     var x = this.canvas.width / 2;
@@ -781,7 +782,7 @@ function Game(){
     this.context.fillStyle = 'white';
     this.context.fillText(text, x, y, this.canvas.width);
     this.context.restore();
-  }
+  };
 }
 
 // Variabili statiche

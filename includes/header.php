@@ -34,16 +34,21 @@
       <a href="index.php"><img src="img/logo.png"/></a>
       <nav>
         <ul>
-          <li><a href="#" title="Classifica" <?php if(isset($section) && $section==2) echo 'class="active"'?>>Classifica</a></li>
-          <li><a href="<?php echo (isset($_SESSION["login"]) && $_SESSION["login"])?"profile.php":"login.php";?>"
-            title="<?php  echo (isset($_SESSION["login"]) && $_SESSION["login"])?'Profilo':'Accedi';?>"
-            <?php if(isset($section) && $section==3) echo 'class="active"'?>>
-            <?php
-              if(isset($_SESSION["login"]) && $_SESSION["login"] && isset($_SESSION["username"]))
-                echo $_SESSION["username"];
+          <li><a href="rankings.php" title="Classifica" <?php if(isset($section) && $section==2) echo 'class="active"'?>>Classifica</a></li>
+          <?php
+            if (isset($_SESSION["login"]) && $_SESSION["login"] && isset($_SESSION['username'])){
+              if(isset($isProfilePage) && $isProfilePage)
+                $type = 2;
               else
-                echo "Accedi";
-            ?>
+                $type = 1;
+            }else
+              $type = 0;
+          ?>
+
+          <li><a href="<?php echo $type==0?"login.php":($type==1?"profile.php":"exit.php");?>"
+            title="<?php echo $type==0?"Accedi":($type==1?"Proflo":"Esci");?>"
+            <?php if(isset($section) && $section==3) echo 'class="active"'?>>
+            <?php echo $type==0?"Accedi":($type==1?$_SESSION['username']:"Esci");?>
           </a></li>
         </ul>
       </nav>

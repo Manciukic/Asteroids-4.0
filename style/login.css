@@ -6,7 +6,7 @@ form{
   font-size: 0.9em;
   color: black;
   background-color: #c3a8dd;
-  padding: 7%;
+  padding: 5%;
 
   /* Ombra */
   box-shadow: 0 2px 5px rgba(0,0,0,.26);
@@ -38,31 +38,36 @@ form{
   margin: 2px solid red;
 }
 
-button{
+form button{
   display: block;
   background-color: #261536;
   color: white;
   border: none;
   font-family: 'Press-Start-2P';
   font-size: 1.5em;
-  padding: 10px;
-  margin: 10px auto;
+  padding: 15px;
+  margin: 20px auto;
   cursor: pointer;
   border: 1px solid #261536;
 }
 
-button:hover{
+form button:hover{
   background-color: #c3a8dd;
   color: black;
 }
 
 form a{
   display: block;
-  width: 100%;
   margin-top: 20px;
   text-decoration: none;
   font-size: 0.8em;
   text-align: center;
+}
+
+form h2{
+  display: block;
+  text-align: center;
+  padding-bottom: 20px;
 }
 
 form a:hover{

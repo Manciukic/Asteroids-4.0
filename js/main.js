@@ -34,6 +34,10 @@ window.onresize = resizeGame;
 function start(){
   //aggiorna il punteggio massimo
   updateScore(mGame.score);
+
+  //resetta le vite
+  updateLives(3);
+
   mGame.canvas.onclick = null;
   mGame.canvas.style.cursor = "none";
   mGame.start();
@@ -63,8 +67,10 @@ function init(){
       if (mGame.score > highscore)
         highscore = mGame.score;
 
-      //TODO upload score
-
+      if(loggedIn){
+        sendScore(mGame.score);
+      }
+      
       mGame.reset();
       mGame.canvas.onclick = start;
       mGame.canvas.style.cursor = "auto";

@@ -1,0 +1,99 @@
+.type-selector{
+  text-align: center;
+  width: 100%;
+  list-style-type: none;
+  margin: 20px 0;
+  padding: 0;
+}
+
+.type-selector li {
+  display: inline;
+  margin:0;
+}
+
+.type-selector li a {
+  display: inline-block;
+  width: 20%;
+  text-align: center;
+  text-decoration: none;
+  font-size: 0.7em;
+  border: 1px solid white;
+  padding: 16px;
+  color: white;
+  line-height: 1.4em;
+}
+
+.type-selector li a:hover{
+  background-color: white;
+  color: #120A1A;
+}
+
+.table-title{
+  color: white;
+  width: 100%;
+  text-align: center;
+  margin: 0;
+  padding: 10px 0;
+}
+
+table{
+  width: 100%;
+  min-width: 480px;
+  font-size: 0.9em;
+  color: black;
+  background-color: #c3a8dd;
+  padding: 5%;
+  margin: 0 auto;
+
+  /* Ombra */
+  box-shadow: 0 2px 5px rgba(0,0,0,.26);
+  -moz-box-shadow: 0 2px 5px rgba(0,0,0,.26);
+  -webkit-box-shadow: 0 2px 5px rgba(0,0,0,.26);
+}
+
+td, th{
+  border: 2px solid black;
+  padding: 10px;
+  text-align: center;
+  margin: 0;
+}
+
+thead{
+  font-weight: bold;
+}
+
+.col1_3{
+  width: 20%;
+}
+
+.col2_3, .col3_3{
+  width: 40%;
+}
+
+.col1_2, .col2_2{
+  width: 50%;
+}
+
+.divider{
+  height: 1.4em;
+}
+
+.arrows{
+  display: block;
+  width: 90%;
+  padding: 20px 5% 50px 5%;
+}
+
+.arrows a{
+  text-align: center;
+  text-decoration: none;
+  font-size: 0.8em;
+  border: 1px solid white;
+  padding: 16px;
+  color: white;
+}
+
+.arrows a:hover{
+  color: #120A1A;
+  background-color: white;
+}

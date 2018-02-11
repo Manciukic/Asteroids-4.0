@@ -9,8 +9,9 @@
     include_once("includes/header.php");
 ?>
   <main>
-    <form name="login" action="login.php" method="POST" onsubmit="return validateForm()">
-      <p id="error"><?php echo $message;?></p>
+    <form name="login" action="login.php" method="POST" onsubmit="return validateForm();">
+      <h2>Login</h2>
+      <p id="error"><?php echo $message != ''?$message:"Dummy error";?></p>
       <div class="form-item">
         <label for="username">Username</label>
         <input type="text" placeholder="Username" name="username" required>
@@ -43,22 +44,29 @@
   }
 
   if (isset($_POST['username']) && isset($_POST['password'])){
-    include_once("includes/db_helper.php");
-    $db = new DBHelper;
-    $login_result = $db->login($_POST['username'], $_POST['password']);
-    switch ($login_result) {
-      case 0:
-        ok_login();
-        break;
-      case 1:
-        no_login("Username non trovato");
-        break;
-      case 2:
-        no_login("Password errata");
-        break;
-      default:
-        no_login('');
-        break;
+    if (!preg_match('/^[A-Za-z0-9]{4,10}$/', $_POST['username'])){
+      no_login("L'username deve contenere da 4 a 10 caratteri alfanumerici");
+    } else if (!preg_match('/^[A-Za-z0-9\-_]{8,}$/', $_POST['password'])){
+      no_login("La password deve contenere almeno 8 caratteri alfanumerici (sono ammessi anche - e _)");
+    } else{
+      include_once("includes/db_helper.php");
+      $db = new DBHelper;
+      $login_result = $db->login($_POST['username'], $_POST['password']);
+      $db->close();
+      switch ($login_result) {
+        case 0:
+          ok_login();
+          break;
+        case 1:
+          no_login("Username non trovato");
+          break;
+        case 2:
+          no_login("Password errata");
+          break;
+        default:
+          no_login('');
+          break;
+      }
     }
   } else{
     no_login('');

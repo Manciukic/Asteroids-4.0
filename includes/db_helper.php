@@ -1,4 +1,5 @@
 <?php
+define("ITEMS_PER_PAGE", 15);
 class DBHelper{
   private $mysqli;
 
@@ -9,10 +10,14 @@ class DBHelper{
     }
   }
 
+  public function close(){
+    $this->mysqli->close();
+  }
+
   // effettua il login con $username e $password e ritorna 0 in caso di successo
   // 1 in caso di username non trovato e 2 in caso di password errata
   public function login($username, $password){
-    $stmt = $this->mysqli->prepare("SELECT password, highscore FROM users WHERE username = ?");
+    $stmt = $this->mysqli->prepare("SELECT password FROM users WHERE username = ?");
     $stmt->bind_param("s", $username);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -25,7 +30,6 @@ class DBHelper{
       if (password_verify($password, $row['password'])){
         $_SESSION['login'] = true;
         $_SESSION['username'] = $username;
-        $_SESSION['highscore'] = $row['highscore'];
 
         $result->close();
         $stmt->close();
@@ -49,72 +53,132 @@ class DBHelper{
     if($success){
       $_SESSION['login'] = true;
       $_SESSION['username'] = $username;
-      $_SESSION['highscore'] = 0;
     }
     return $success;
   }
 
-  // inserisce il nuovo punteggio e ritorna il nuovo highscore
-  // ritorna -1 in caso di errore
+  // carica le statistiche dell'utente attuale nella variabile $_SESSION
+  // ritorna false in caso di errore, true in caso di successo
+  public function loadStats(){
+    if(isset($_SESSION["login"]) && $_SESSION["login"] && isset($_SESSION['username'])){
+      //non c'è rischio di sql injection
+      $result = $this->mysqli->query("SELECT highscore, avgscore, hscore FROM users WHERE username = '{$_SESSION['username']}'");
+      if($result->num_rows == 0){
+        $result->close();
+        return false;
+      }
+      while($row = $result->fetch_assoc()) {
+        $_SESSION['highscore'] = $row['highscore'];
+        $_SESSION['hscore'] = $row['hscore'];
+        $_SESSION['avgscore'] = $row['avgscore'];
+
+        $result->close();
+        return true;
+      }
+    } else{
+      return false;
+    }
+  }
+
+  // inserisce il nuovo punteggio e ritorna true in caso di successo,
+  // false in caso di errore
   public function insertScore($username, $score){
     $stmt_insert = $this->mysqli->prepare("INSERT INTO scores(user, score) VALUE(?, ?)");
     $stmt_insert->bind_param("si", $username, $score);
     $success = $stmt_insert->execute();
     $stmt_insert->close();
 
-    if($success){
-      $stmt_select = $this->mysqli->prepare("SELECT MAX(score) AS max FROM scores WHERE user = ?");
-      $stmt_select->bind_param("s", $username);
-      $stmt_select->execute();
-      $result = $stmt_select->get_result();
-      if($result->num_rows == 0){
-        $result->close();
-        $stmt->close();
-        return -1;
-      }
-      while($row = $result->fetch_assoc()) {
-        $_SESSION['highscore'] = $row['max'];
-        $result->close();
-        $stmt_select->close();
-
-        return $_SESSION['highscore'];
-      }
-    } else{
-      return -1;
-    }
+    return $success;
   }
 
-  //crea un array di dizionari che contengono user e punteggio
-  public function arrayfy($result){
+  // ritorna la classifica per $field
+  public function getRanking($page_n, $field){
+    if (!in_array($field, array('highscore', 'avgscore', 'hscore')))
+      return array();
+    if (!is_int($page_n) || $page_n<0)
+      return array();
+
+    $offset = $page_n*ITEMS_PER_PAGE;
+    $query = "SELECT username, {$field} AS score FROM users WHERE {$field} > 0 ORDER BY {$field} DESC LIMIT ".ITEMS_PER_PAGE." OFFSET {$offset}";
+    $result = $this->mysqli->query($query);
+
+    $array = array();
     while($row = $result->fetch_assoc()) {
       $array[] = array('user' => $row['username'], 'score' => $row['score']);
     }
-    return $array;
-  }
-
-  // ritorna la classifica per punteggio massimo
-  public function getRankingByHighScore(){
-    $result = $this->mysqli->query("SELECT username, highscore AS score FROM users WHERE highscore > 0 ORDER BY highscore DESC");
-    $array = arrayfy($result);
     $result->close();
     return $array;
   }
 
-  // ritorna la classifica per punteggio medio
-  public function getRankingByAvgScore(){
-    $result = $this->mysqli->query("SELECT username, avgscore AS score FROM users WHERE avgscore > 0 ORDER BY avgscore DESC");
-    $array = arrayfy($result);
+  // ottiene il numero di pagine per il field selezionato
+  public function getNumberOfPagesRanking($field){
+    if (!in_array($field, array('highscore', 'avgscore', 'hscore')))
+      return array();
+    $result = $this->mysqli->query("SELECT COUNT(*) AS n FROM users WHERE {$field} > 0");
+    if($result->num_rows == 0){
+      $result->close();
+      return 0;
+    }
+    while($row = $result->fetch_assoc()) {
+      return ceil($row['n']/ITEMS_PER_PAGE);
+    }
+    // non dovrebbe mai arrivare qui...
+    return 0;
+  }
+
+  // ottiene la cronologia delle partite dell'utente $user
+  public function getHistory($user, $page_n){
+    if (!is_int($page_n) || $page_n<0)
+      return array();
+
+    $offset = $page_n*ITEMS_PER_PAGE;
+    $query = "SELECT UNIX_TIMESTAMP(timestamp) AS ts, score FROM scores WHERE user = '{$user}' ORDER BY timestamp DESC LIMIT ".ITEMS_PER_PAGE." OFFSET {$offset}";
+    $result = $this->mysqli->query($query);
+
+    $array = array();
+    while($row = $result->fetch_assoc()) {
+      $array[] = array('timestamp' => $row['ts'], 'score' => $row['score']);
+    }
     $result->close();
     return $array;
   }
 
-  //riorna la classifica per H-score
-  public function getRankingByHScore(){
-    $result = $this->mysqli->query("SELECT username, hscore AS score FROM users WHERE hscore > 0 ORDER BY hscore DESC");
-    $array = arrayfy($result);
-    $result->close();
-    return $array;
+  // ottiene quante partite ha fatto $user
+  public function getNumberOfGames($user){
+    $result = $this->mysqli->query("SELECT COUNT(*) AS n FROM scores WHERE user = '{$user}'");
+    if($result->num_rows == 0){
+      $result->close();
+      return 0;
+    }
+    while($row = $result->fetch_assoc()) {
+      return $row['n'];
+    }
+    // non dovrebbe mai arrivare qui...
+    return 0;
   }
 
+  // ottiene il numero di pagine per la cronologia di $user
+  public function getNumberOfPagesHistory($user){
+    return ceil($this->getNumberOfGames($user)/ITEMS_PER_PAGE);
+  }
+
+  // ottiene la posizione in classifica di $user rispetto al campo $field
+  public function getRankPosition($user, $field){
+    if (!in_array($field, array('highscore', 'avgscore', 'hscore')))
+      return 0;
+
+    $query = "SELECT COUNT(DISTINCT {$field})+1 AS pos FROM users WHERE {$field} > (SELECT {$field} FROM users WHERE username = '{$user}')";
+    $result = $this->mysqli->query($query);
+
+    if($result->num_rows == 0){
+      $result->close();
+      return 0;
+    }
+    while($row = $result->fetch_assoc()) {
+      return $row['pos'];
+    }
+    // non dovrebbe mai arrivare qui...
+    return 0;
+  }
 }
  ?>
