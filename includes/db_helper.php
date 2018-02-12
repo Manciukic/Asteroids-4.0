@@ -24,6 +24,7 @@ class DBHelper{
     if ($this->mysqli->connect_error) {
       die('Connect Error (' . $this->mysqli->connect_errno . ') '. $this->mysqli->connect_error);
     }
+    die($connectstr_dbhost." ".$connectstr_dbusername." ".$connectstr_dbpassword." ".$connectstr_dbname);
   }
 
   public function close(){
