@@ -8,7 +8,7 @@ form{
   background-color: #c3a8dd;
   padding: 5%;
 
-  /* Ombra */
+  /* Ombra, compatibilità con vecchi browser */
   box-shadow: 0 2px 5px rgba(0,0,0,.26);
   -moz-box-shadow: 0 2px 5px rgba(0,0,0,.26);
   -webkit-box-shadow: 0 2px 5px rgba(0,0,0,.26);
@@ -20,22 +20,19 @@ form{
   padding: 1%;
 }
 
-.form-item label{
+.form-item p{
   display: inline-block;
   width: 30%;
   padding: 1%;
   text-align: right;
+  margin: 0;
 }
 
 .form-item input{
   display: inline-block;
-  font-family: 'Press-Start-2P';
+  font-family: 'Press-Start-2P', Courier, monospace;
   width: 58%;
   padding: 1%;
-}
-
-.form-item input:invalid{
-  margin: 2px solid red;
 }
 
 form button{
@@ -43,11 +40,13 @@ form button{
   background-color: #261536;
   color: white;
   border: none;
-  font-family: 'Press-Start-2P';
+  font-family: 'Press-Start-2P', Courier, monospace;
   font-size: 1.5em;
   padding: 15px;
   margin: 20px auto;
   cursor: pointer;
+  /* CSS validator: Hai utilizzato lo stesso colore per background-color e border-*-color*/
+  /*Mi serve per quando cambio il colore in :hover */
   border: 1px solid #261536;
 }
 

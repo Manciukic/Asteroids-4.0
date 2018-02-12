@@ -9,9 +9,9 @@
 <main>
   <article>
     <h2>Introduzione</h2>
-      <img class="left" src="img/carl_fredricksen.png"/>
-      <p>Spazio, anno 4018. Carl Fredricksen sta tornando a casa da una missione spaziale nella galassia Salto Angel dove si era recato per studiare i reperti di un uccello preistorico simile ad uno struzzo quando si imbatte in una fascia di asteroidi. </p>
-      <p>L'unico modo per uscirne vivo &egrave; pilotare un drone a forma di navicella spaziale per distruggere il maggior numero di asteroidi. Le probabilit&agrave; di successo crescono proporzionalmente al numero di asteroidi distrutti.</p>
+      <img class="left" src="img/carl_fredricksen.png" alt="Foto del nostro eroe"/>
+      <p>Spazio, anno 4018. Carl Fredricksen sta tornando a casa da una missione spaziale nella galassia Salto Angel, dove si era recato per studiare i resti di un uccello preistorico simile ad uno struzzo, quando si imbatte in una fascia di asteroidi. </p>
+      <p>L'unico modo per uscirne vivo &egrave; pilotare un drone a forma di astronave per distruggere il maggior numero di asteroidi. Le probabilit&agrave; di successo crescono proporzionalmente al numero di asteroidi distrutti.</p>
     <h2>Comandi</h2>
       <h3>Movimento</h3>
         <ul>
@@ -23,7 +23,7 @@
       <h3>Abilit&agrave; speciali</h3>
         <ul>
           <li><img src="img/space.png" alt="Barra spaziatrice"/>: attiva il cannone laser per lanciare un proiettile nella direzione della navicella.</li>
-          <li><img src="img/shift.png" alt="Shift"/>: attiva il teletrasporto instabile per essere teletrasportato in un punto casuale della mappa. Attenzione: pu&ograve; causare la distruzione della navicella, usare con cautela.</li>
+          <li><img src="img/shift.png" alt="Shift"/>: attiva il teletrasporto instabile per essere teletrasportato in un punto casuale della mappa. Tra un'attivazione e l'altra bisogna attendere il tempo di ricarica di 2 secondi. Attenzione: pu&ograve; causare la distruzione della navicella, usare con cautela. </li>
         </ul>
     <h2>Regole del gioco</h2>
       <h3>Vite</h3>

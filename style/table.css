@@ -45,7 +45,7 @@ table{
   padding: 5%;
   margin: 0 auto;
 
-  /* Ombra */
+  /* Ombra, compatibilità con vecchi browser */
   box-shadow: 0 2px 5px rgba(0,0,0,.26);
   -moz-box-shadow: 0 2px 5px rgba(0,0,0,.26);
   -webkit-box-shadow: 0 2px 5px rgba(0,0,0,.26);
@@ -76,6 +76,9 @@ thead{
 
 .divider{
   height: 1.4em;
+}
+.divider td{
+  border: none;
 }
 
 .arrows{

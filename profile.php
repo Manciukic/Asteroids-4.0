@@ -69,7 +69,7 @@
         <td class="col1_2">Partite giocate</td>
         <td class="col2_2"><?php echo $nGames;?></td>
       </tr>
-      <tr class="divider"></tr>
+      <tr class="divider"><td></td><td></td></tr>
       <tr>
         <td class="col1_2">Punteggio Massimo</td>
         <td class="col2_2"><?php echo $_SESSION['highscore'];?></td>
@@ -78,7 +78,7 @@
         <td class="col1_2">Posizione in classifica </td>
         <td class="col2_2"><?php echo $rankPositionHighscore;?></td>
       </tr>
-      <tr class="divider"></tr>
+      <tr class="divider"><td></td><td></td></tr>
       <tr>
         <td class="col1_2">Punteggio Medio</td>
         <td class="col2_2"><?php echo $_SESSION['avgscore'];?></td>
@@ -87,7 +87,7 @@
         <td class="col1_2">Posizione in classifica </td>
         <td class="col2_2"><?php echo $rankPositionAvgscore;?></td>
       </tr>
-      <tr class="divider"></tr>
+      <tr class="divider"><td></td><td></td></tr>
       <tr>
         <td class="col1_2">Punteggio H-score</td>
         <td class="col2_2"><?php echo $_SESSION['hscore'];?></td>

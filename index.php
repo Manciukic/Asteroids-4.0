@@ -24,14 +24,16 @@
         echo "[RECORD {$_SESSION['highscore']}] ";
       }
     ?>PUNTI     0</p>
-    <canvas id="game_canvas">
+    <canvas id="game_canvas">Ooops, sembra che il tuo browser non supporti i canvas</canvas>
   </div>
 </main>
+
+<script>
+  loggedIn = <?php echo $loggedIn?"true":"false";?>;
+  highscore = <?php echo $loggedIn?$_SESSION["highscore"]:0;?>;
+</script>
+
 <?php
   $isShortPage = true;
   include_once("includes/footer.php");
 ?>
-<script type="text/javascript">
-  loggedIn = <?php echo $loggedIn?"true":"false";?>;
-  highscore = <?php echo $loggedIn?$_SESSION["highscore"]:0;?>;
-</script>

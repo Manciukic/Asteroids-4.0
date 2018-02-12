@@ -1,7 +1,7 @@
 body{
   margin: 0;
   background-color: #261536;
-  font-family: 'Press-Start-2P';
+  font-family: 'Press-Start-2P', Courier, monospace;
   overflow-y: scroll;
 }
 
@@ -15,7 +15,7 @@ header{
   margin-bottom: .5%;
   background-color: #1c0f28;
   color: white;
-  /* Ombra */
+  /* Ombra, compatibilità con vecchi browser */
   box-shadow: 0 2px 5px rgba(0,0,0,.26);
   -moz-box-shadow: 0 2px 5px rgba(0,0,0,.26);
   -webkit-box-shadow: 0 2px 5px rgba(0,0,0,.26);

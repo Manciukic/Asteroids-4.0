@@ -1,10 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang='it'>
   <head>
     <title><?php if(isset($title)) echo $title;?></title>
     <meta name="author" content="Riccardo Mancini">
-
-    <meta http-equiv="Content-Script-Type" content="text/javascript">
 
     <link rel="icon" type="image/png" href="favicon.ico"/>
 
@@ -18,7 +16,7 @@
       }
       if (isset($include_js)){
         foreach ($include_js as $key => $value) {
-          echo "<script type='text/javascript' src='js/{$value}.js'></script>\n";
+          echo "<script src='js/{$value}.js'></script>\n";
         }
       }
     ?>
@@ -31,7 +29,7 @@
           <li><a href="guide.php" title="Guida" <?php if(isset($section) && $section==1) echo 'class="active"'?>>Guida</a></li>
         </ul>
       </nav>
-      <a href="index.php"><img src="img/logo.png"/></a>
+      <a href="index.php"><img src="img/logo.png" alt="Asteroids 4.0"/></a>
       <nav>
         <ul>
           <li><a href="rankings.php" title="Classifica" <?php if(isset($section) && $section==2) echo 'class="active"'?>>Classifica</a></li>

@@ -7,7 +7,7 @@
   background-color: #c3a8dd;
   padding: 7%;
 
-  /* Ombra */
+  /* Ombra, compatibilità con vecchi browser */
   box-shadow: 0 2px 5px rgba(0,0,0,.26);
   -moz-box-shadow: 0 2px 5px rgba(0,0,0,.26);
   -webkit-box-shadow: 0 2px 5px rgba(0,0,0,.26);
@@ -17,14 +17,16 @@
   display: block;
   background-color: #261536;
   color: white;
-  font-family: 'Press-Start-2P';
+  font-family: 'Press-Start-2P', Courier, monospace;
   text-decoration: none;
   font-size: 2em;
   padding: 10px;
   margin: 10px auto;
   cursor: pointer;
-  border: 1px solid #261536;
   text-align: center;
+  /* CSS validator: Hai utilizzato lo stesso colore per background-color e border-*-color*/
+  /*Mi serve per quando cambio il colore in :hover */
+  border: 1px solid #261536;
 }
 
 .message a:hover{

@@ -13,15 +13,15 @@
       <h2>Registrazione</h2>
       <p id="error"><?php echo $message != ''?$message:"Dummy error";?></p>
       <div class="form-item">
-        <label for="username">Username</label>
+        <p>Username</p>
         <input type="text" placeholder="Username" name="username" required>
       </div>
       <div class="form-item">
-        <label for="password">Password</label>
+        <p>Password</p>
         <input type="password" placeholder="Password" name="password" required>
       </div>
       <div class="form-item">
-        <label for="password_repeat">Ripeti Password</label>
+        <p>Ripeti Password</p>
         <input type="password" placeholder="Ripeti Password" name="password_repeat" required>
       </div>
       <button type="submit">Registrati</button>

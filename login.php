@@ -13,11 +13,11 @@
       <h2>Login</h2>
       <p id="error"><?php echo $message != ''?$message:"Dummy error";?></p>
       <div class="form-item">
-        <label for="username">Username</label>
+        <p>Username</p>
         <input type="text" placeholder="Username" name="username" required>
       </div>
       <div class="form-item">
-        <label for="password">Password</label>
+        <p>Password</p>
         <input type="password" placeholder="Password" name="password" required>
       </div>
       <button type="submit">Login</button>
