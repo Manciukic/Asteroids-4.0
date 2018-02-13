@@ -39,7 +39,7 @@
 
   function ok_login(){
     $title = "Asteroids 4.0 - Login avvenuto";
-    $message = "Login avvenuto con successo!";
+    $message_text = "Login avvenuto con successo!";
     include_once("includes/message.php");
   }
 

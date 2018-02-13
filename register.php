@@ -42,7 +42,7 @@
 
   function ok_register(){
     $title = "Asteroids 4.0 - Registrazione effettuata";
-    $message = "Registrazione avvenuta con successo!";
+    $message_text = "Registrazione avvenuta con successo!";
     include_once("includes/message.php");
   }
 
