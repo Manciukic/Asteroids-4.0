@@ -48,6 +48,7 @@
       $old = -1;
       foreach ($array as $key => $value) {
         $pos = $old != $value['score'] ? $pos+1 : $pos;
+        $old = $value['score'];
         echo "<tr><td class='col1'>${pos}</td><td class='col2'>{$value['user']}</td><td class='col3'>{$value['score']}</td></tr>\n";
       }
       for ($i=count($array); $i < ITEMS_PER_PAGE; $i++) {
