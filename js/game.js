@@ -437,6 +437,7 @@ function Game(){
   var BEAT_INTERVAL = 30;
   var RESPAWN_INTERVAL = 100;
   var IMMUNITY_INTERVAL = 50;
+  var CHANGE_SOUND_INTERVAL = 30;
 
   // il canvas è inizializzato dall'init
   this.canvas = null;
@@ -455,10 +456,11 @@ function Game(){
   // Audio di gioco
   this.beat1Sound = mLoader.get('assets/beat1.wav');
   this.beat2Sound = mLoader.get('assets/beat2.wav');
-  this.backgroundSoundPaused = false;
   this.soundCounter = 0;
-  this.bonusTrack = null;
+  this.bonusTrack = mLoader.get('assets/bonusTrack.mp3');
+  this.bonusTrack.loop = true;
   this.bonusTrackActivated = false;
+  this.changeSoundCooldown = 0;
 
   // sfondo
   this.backgroundloaded = false;
@@ -477,16 +479,32 @@ function Game(){
   this.onEnd = null;
   //callback per aggiornare elementi esterni al canvas ad ogni loop
   this.onLoop = null;
+  //callback per il gioco in pausa
+  this.onPause = null;
 
   var loopInterval;
 
   this.start = function (){
-    loopInterval = setInterval('mGame.loop()', 30);
-    this.backgroundSoundPaused = false;
     this.level = 0;
     this.score = 0;
     this.bonusLives = 0;
+    loopInterval = setInterval('mGame.loop()', 30);
   };
+
+  this.pause = function (){
+    clearInterval(loopInterval);
+
+    this.drawMessage("Gioco in pausa", 40, false);
+    this.drawSubMessage("Clicca di nuovo per ripartire", 20, 40);
+
+    if (this.onPause != null){
+      this.onPause();
+    }
+  }
+
+  this.resume = function(){
+    loopInterval = setInterval('mGame.loop()', 30);
+  }
 
   this.end = function(){
     clearInterval(loopInterval);
@@ -516,7 +534,6 @@ function Game(){
     this.explosions = new Array();
 
     // Audio di gioco
-    this.backgroundSoundPaused = false;
     this.soundCounter = 0;
 
     //punteggio e livello
@@ -598,12 +615,20 @@ function Game(){
     }
 
     // Audio in background
-    if(keyboard[M_KEY]){
-      this.bonusTrackActivated = true;
+    if (this.changeSoundCooldown == 0){
+      if(keyboard[M_KEY]){
+        this.bonusTrackActivated = !this.bonusTrackActivated;
+        this.changeSoundCooldown = CHANGE_SOUND_INTERVAL;
+      }
+    } else{
+      this.changeSoundCooldown --;
     }
+
     if (!this.bonusTrackActivated){
+      if (!this.bonusTrack.paused)
+        this.bonusTrack.pause();
       this.soundCounter ++;
-      if (this.soundCounter % BEAT_INTERVAL == 0 && !this.backgroundSoundPaused){
+      if (this.soundCounter % BEAT_INTERVAL == 0){
         if (Math.floor(this.soundCounter / BEAT_INTERVAL) % 2 == 0){
           this.beat1Sound.play();
         } else {
@@ -613,14 +638,8 @@ function Game(){
           this.soundCounter = 0;
       }
     } else{
-      if (this.bonusTrack == null){
-        mLoader.load('assets/bonusTrack.mp3', 'audio');
-        this.bonusTrack = mLoader.get('assets/bonusTrack.mp3');
-        this.bonusTrack.loop = true;
-      } else{
         if (this.bonusTrack.paused)
           this.bonusTrack.play();
-      }
     }
 
     // cancello il frame precedente
@@ -722,6 +741,9 @@ function Game(){
 
     if(this.onLoop != null)
       this.onLoop(scoreChanged, livesChanged);
+
+    if(keyboard[P_KEY] || keyboard[ESC_KEY])
+      this.pause();
   };
 
   this.resize = function(width, height){

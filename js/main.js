@@ -43,6 +43,13 @@ function start(){
   mGame.start();
 }
 
+//Ripristina il gioco dopo la pausa
+function resume(){
+  mGame.canvas.onclick = null;
+  mGame.canvas.style.cursor = "none";
+  mGame.resume();
+}
+
 // Aspetta che sia tutto pronto e poi dà il via al gioco
 window.onload = function(){
   mGame.setCanvas(document.getElementById('game_canvas'));
@@ -70,7 +77,7 @@ function init(){
       if(loggedIn){
         sendScore(mGame.score);
       }
-      
+
       mGame.reset();
       mGame.canvas.onclick = start;
       mGame.canvas.style.cursor = "auto";
@@ -81,5 +88,10 @@ function init(){
       if (scoreChanged) updateScore(mGame.score);
       if (livesChanged) updateLives(mGame.ship.lives);
     };
+
+    mGame.onPause = function(){
+      mGame.canvas.onclick = resume;
+      mGame.canvas.style.cursor = "auto";
+    }
   }
 }

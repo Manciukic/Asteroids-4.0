@@ -71,3 +71,4 @@ mLoader.load('assets/fire.wav', 'audio');
 mLoader.load('assets/respawn.wav', 'audio');
 mLoader.load('assets/teleport.wav', 'audio');
 mLoader.load('assets/thrust.wav', 'audio');
+mLoader.load('assets/bonusTrack.mp3', 'audio');

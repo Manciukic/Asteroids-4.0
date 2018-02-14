@@ -15,6 +15,8 @@ var P_KEY = 80;
 var F1_KEY = 112;
 var Q_KEY = 81;
 var M_KEY = 77;
+var P_KEY = 80;
+var ESC_KEY = 27;
 
 // Gestore degli eventi della tastiera
 function onKeyDownHandler(e){

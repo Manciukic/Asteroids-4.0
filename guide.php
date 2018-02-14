@@ -9,7 +9,7 @@
   <article>
     <h2>Introduzione</h2>
       <img class="left" src="img/carl_fredricksen.png" alt="Foto del nostro eroe"/>
-      <p>Spazio, anno 4018. Carl Fredricksen sta tornando a casa da una missione spaziale nella galassia Salto Angel, dove si era recato per studiare i resti di un uccello preistorico simile ad uno struzzo, quando si imbatte in una fascia di asteroidi. </p>
+      <p>Spazio, anno 4018. Carl Fredricksen sta tornando a casa da una missione spaziale nella galassia Salto Angel, dove si era recato per studiare i resti di uno struzzo preistorico, quando si imbatte in una fascia di asteroidi. </p>
       <p>L'unico modo per uscirne vivo &egrave; pilotare un drone a forma di astronave per distruggere il maggior numero di asteroidi. Le probabilit&agrave; di successo crescono proporzionalmente al numero di asteroidi distrutti.</p>
     <h2>Comandi</h2>
       <h3>Movimento</h3>
@@ -17,12 +17,17 @@
           <li><img src="img/up.png" alt="Freccia su"/>: attiva il propulsore ad elio per ricevere una spinta nella direzione della navicella.</li>
           <li><img src="img/left_right.png" alt="Freccia sinistra/destra"/>: ruota in senso antiorario/orario la navicella.</li>
         </ul>
+        <p>La mappa &egrave; toroidale, ovvero se la navicella o gli asteroidi escono da sopra ricompaiono sotto e viceversa, se escono da destra ricompaiono a sinistra e viceversa.</p>
         <p>Achtung! Nello spazio l'attrito &egrave; pressoch&egrave; assente e non c'&egrave; alcun sistema di freni. L'unico modo per rallentare &egrave; girarsi di 180&deg; e attivare i propulsori.</p>
-        <p>Achtung! La mappa &egrave; toroidale, ovvero se la navicella o gli asteroidi escono da sopra ricompaiono sotto e viceversa, se escono da destra ricompaiono a sinistra e viceversa.</p>
       <h3>Abilit&agrave; speciali</h3>
         <ul>
           <li><img src="img/space.png" alt="Barra spaziatrice"/>: attiva il cannone laser per lanciare un proiettile nella direzione della navicella.</li>
           <li><img src="img/shift.png" alt="Shift"/>: attiva il teletrasporto instabile per essere teletrasportato in un punto casuale della mappa. Tra un'attivazione e l'altra bisogna attendere il tempo di ricarica di 2 secondi. Attenzione: pu&ograve; causare la distruzione della navicella, usare con cautela. </li>
+        </ul>
+      <h3>Altro</h3>
+        <ul>
+          <li><img src="img/esc.png" alt="Esc"/>: mette in pausa il gioco.</li>
+          <li><img src="img/m.png" alt="M"/>: cambia la musica di sottofondo del gioco.</li>
         </ul>
     <h2>Regole del gioco</h2>
       <h3>Vite</h3>
