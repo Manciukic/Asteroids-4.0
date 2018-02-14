@@ -67,7 +67,7 @@ class DBHelper{
   // ritorna 0 se l'inserimento è avvenuto con successo, 1 se l'utente esiste già, 2 se l'email  già stata usata, 3 per altri errori
   public function register($username, $email, $password){
     // Controlla che non ci siano già utenti con quell'username.
-    $stmt_select_username = $this->mysqli->prepare("SELECT COUNT(*) FROM users WHERE username = ?");
+    $stmt_select_username = $this->mysqli->prepare("SELECT * FROM users WHERE username = ?");
     $stmt_select_username->bind_param("s", $username);
     $stmt_select_username->execute();
     $result_username = $stmt_select_username->get_result();
@@ -79,7 +79,7 @@ class DBHelper{
     }
 
     // Controlla che non ci siano già utenti con quell'email.
-    $stmt_select_email = $this->mysqli->prepare("SELECT COUNT(*) FROM users WHERE email = ?");
+    $stmt_select_email = $this->mysqli->prepare("SELECT * FROM users WHERE email = ?");
     $stmt_select_email->bind_param("s", $email);
     $stmt_select_email->execute();
     $result_email = $stmt_select_email->get_result();

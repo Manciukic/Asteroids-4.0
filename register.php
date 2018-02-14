@@ -64,7 +64,9 @@
     } else {
       include_once("includes/db_helper.php");
       $db = new DBHelper;
-      switch($db->register($_POST['username'], $_POST['email'], $_POST['password'])){
+      $register_result = $db->register($_POST['username'], $_POST['email'], $_POST['password']);
+      $db->close();
+      switch($register_result){
         case 0:
           ok_register();
           break;
@@ -78,7 +80,6 @@
           no_register('Errore indefinito', $_POST['username'], $_POST['email']);
           break;
       }
-      $db->close();
     }
   } else
     no_register();
