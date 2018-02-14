@@ -98,6 +98,10 @@ footer p{
   font-size: 0.5em;
 }
 
+footer a{
+  color: white;
+}
+
 .left{
   float: left;
   text-align: left;

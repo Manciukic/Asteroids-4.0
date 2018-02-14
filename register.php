@@ -1,11 +1,11 @@
 <?php
   session_start();
 
-  function no_register($message){
+  function no_register($message = '', $username = '', $email = ''){
     $title = "Asteroids 4.0 - Registrati";
     $section = -1;
     $include_js = ['register'];
-    $include_css = ['login'];
+    $include_css = ['form'];
     include_once("includes/header.php");
 ?>
   <main>
@@ -14,7 +14,15 @@
       <p id="error"><?php echo $message != ''?$message:"Dummy error";?></p>
       <div class="form-item">
         <p>Username</p>
-        <input type="text" placeholder="Username" name="username" required>
+        <input type="text" placeholder="Username" name="username" value="<?php echo $username;?>" required>
+      </div>
+      <div class="form-item">
+        <p>Email</p>
+        <input type="email" placeholder="Email" name="email" value="<?php echo $email;?>" required>
+      </div>
+      <div class="form-item">
+        <p>Ripeti email</p>
+        <input type="email" placeholder="Ripeti Email" name="email_repeat" value="<?php echo $email;?>" required>
       </div>
       <div class="form-item">
         <p>Password</p>
@@ -46,20 +54,32 @@
     include_once("includes/message.php");
   }
 
-  if (isset($_POST['username']) && isset($_POST['password'])){
+  if (isset($_POST['username']) && isset($_POST['password']) && isset($_POST['email'])){
     if (!preg_match('/^[A-Za-z0-9]{4,10}$/', $_POST['username'])){
-      no_login("L'username deve contenere da 4 a 10 caratteri alfanumerici");
+      no_register("L'username deve contenere da 4 a 10 caratteri alfanumerici", $_POST['username'], $_POST['email']);
     } else if (!preg_match('/^[A-Za-z0-9\-_]{8,}$/', $_POST['password'])){
-      no_login("La password deve contenere almeno 8 caratteri alfanumerici (sono ammessi anche - e _)");
-    } else{
+      no_register("La password deve contenere almeno 8 caratteri alfanumerici (sono ammessi anche - e _)", $_POST['username'], $_POST['email']);
+    } else if(!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)){
+      no_register("L'indirizzo email non &egrave; valido", $_POST['username'], $_POST['email']);
+    } else {
       include_once("includes/db_helper.php");
       $db = new DBHelper;
-      if ($db->register($_POST['username'], $_POST['password'])){
-        ok_register();
-      } else
-        no_register('Username gi&agrave; in uso');
+      switch($db->register($_POST['username'], $_POST['email'], $_POST['password'])){
+        case 0:
+          ok_register();
+          break;
+        case 1:
+          no_register('Username gi&agrave; in uso', $_POST['username'], $_POST['email']);
+          break;
+        case 2:
+          no_register('Email gi&agrave; in uso', $_POST['username'], $_POST['email']);
+          break;
+        default:
+          no_register('Errore indefinito', $_POST['username'], $_POST['email']);
+          break;
+      }
       $db->close();
     }
   } else
-    no_register('');
+    no_register();
 ?>

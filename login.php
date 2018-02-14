@@ -1,11 +1,11 @@
 <?php
   session_start();
 
-  function no_login($message){
+  function no_login($message = '', $username = ''){
     $title = "Asteroids 4.0 - Login";
     $section = 3;
     $include_js = ['login'];
-    $include_css = ['login'];
+    $include_css = ['form'];
     include_once("includes/header.php");
 ?>
   <main>
@@ -14,7 +14,7 @@
       <p id="error"><?php echo $message != ''?$message:"Dummy error";?></p>
       <div class="form-item">
         <p>Username</p>
-        <input type="text" placeholder="Username" name="username" required>
+        <input type="text" placeholder="Username" name="username" value="<?php echo $username;?>" required>
       </div>
       <div class="form-item">
         <p>Password</p>
@@ -45,9 +45,9 @@
 
   if (isset($_POST['username']) && isset($_POST['password'])){
     if (!preg_match('/^[A-Za-z0-9]{4,10}$/', $_POST['username'])){
-      no_login("L'username deve contenere da 4 a 10 caratteri alfanumerici");
+      no_login("L'username deve contenere da 4 a 10 caratteri alfanumerici", $_POST['username']);
     } else if (!preg_match('/^[A-Za-z0-9\-_]{8,}$/', $_POST['password'])){
-      no_login("La password deve contenere almeno 8 caratteri alfanumerici (sono ammessi anche - e _)");
+      no_login("La password deve contenere almeno 8 caratteri alfanumerici (sono ammessi anche - e _)", $_POST['username']);
     } else{
       include_once("includes/db_helper.php");
       $db = new DBHelper;
@@ -58,10 +58,10 @@
           ok_login();
           break;
         case 1:
-          no_login("Username non trovato");
+          no_login("Username non trovato", $_POST['username']);
           break;
         case 2:
-          no_login("Password errata");
+          no_login("Password errata", $_POST['username']);
           break;
         default:
           no_login('');
@@ -69,6 +69,6 @@
       }
     }
   } else{
-    no_login('');
+    no_login();
   }
 ?>

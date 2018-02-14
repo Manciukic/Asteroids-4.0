@@ -12,6 +12,11 @@ article{
   -webkit-box-shadow: 0 2px 5px rgba(0,0,0,.26);
 }
 
+article h1{
+  text-align: center;
+  font-size: 2em;
+}
+
 article p{
   text-align: left;
   line-height: 1.5em;

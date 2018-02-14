@@ -4,6 +4,7 @@ class DBHelper{
   private $mysqli;
 
   function __construct(){
+    // MICROSOFT AZURE WEB APP
     $connectstr_dbhost = '';
     $connectstr_dbname = '';
     $connectstr_dbusername = '';
@@ -20,7 +21,10 @@ class DBHelper{
         $connectstr_dbpassword = preg_replace("/^.*Password=(.+?)$/", "\\1", $value);
     }
     $this->mysqli = new mysqli($connectstr_dbhost, $connectstr_dbusername, $connectstr_dbpassword, $connectstr_dbname);
+
+    // LOCALHOST
     // $this->mysqli = new mysqli('localhost', 'webserver', '6T6e9R7EYXfquVZN', 'asteroids');
+
     if ($this->mysqli->connect_error) {
       die('Connect Error (' . $this->mysqli->connect_errno . ') '. $this->mysqli->connect_error);
     }
@@ -33,7 +37,7 @@ class DBHelper{
   // effettua il login con $username e $password e ritorna 0 in caso di successo
   // 1 in caso di username non trovato e 2 in caso di password errata
   public function login($username, $password){
-    $stmt = $this->mysqli->prepare("SELECT password FROM users WHERE username = ?");
+    $stmt = $this->mysqli->prepare("SELECT email, password FROM users WHERE username = ?");
     $stmt->bind_param("s", $username);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -46,6 +50,7 @@ class DBHelper{
       if (password_verify($password, $row['password'])){
         $_SESSION['login'] = true;
         $_SESSION['username'] = $username;
+        $_SESSION['email'] = $row['email'];
 
         $result->close();
         $stmt->close();
@@ -59,40 +64,87 @@ class DBHelper{
   }
 
   // registra l'utente salvando nel database nome utente e hash della password
-  // ritorna true se l'inserimento è avvenuto con successo, false se l'utente esiste già (o in caso di errore)
-  public function register($username, $password){
+  // ritorna 0 se l'inserimento è avvenuto con successo, 1 se l'utente esiste già, 2 se l'email  già stata usata, 3 per altri errori
+  public function register($username, $email, $password){
+    // Controlla che non ci siano già utenti con quell'username.
+    $stmt_select_username = $this->mysqli->prepare("SELECT COUNT(*) FROM users WHERE username = ?");
+    $stmt_select_username->bind_param("s", $username);
+    $stmt_select_username->execute();
+    $result_username = $stmt_select_username->get_result();
+    $rows_username = $result_username->num_rows;
+    $result_username->close();
+    $stmt_select_username->close();
+    if($rows_username != 0){ // Esiste già uno con lo stesso username
+      return 1;
+    }
+
+    // Controlla che non ci siano già utenti con quell'email.
+    $stmt_select_email = $this->mysqli->prepare("SELECT COUNT(*) FROM users WHERE email = ?");
+    $stmt_select_email->bind_param("s", $email);
+    $stmt_select_email->execute();
+    $result_email = $stmt_select_email->get_result();
+    $rows_email = $result_email->num_rows;
+    $result_email->close();
+    $stmt_select_email->close();
+    if($rows_email != 0){ // Esiste già uno con la stessa email
+      return 2;
+    }
+
     $hash = password_hash($password, PASSWORD_BCRYPT);
-    $stmt = $this->mysqli->prepare("INSERT INTO users(username, password) VALUE(?, ?)");
-    $stmt->bind_param("ss", $username, $hash);
+    $stmt = $this->mysqli->prepare("INSERT INTO users(username, email, password) VALUE(?, ?, ?)");
+    $stmt->bind_param("sss", $username, $email, $hash);
     $success = $stmt->execute();
     $stmt->close();
     if($success){
       $_SESSION['login'] = true;
       $_SESSION['username'] = $username;
-    }
+      $_SESSION['email'] = $email;
+      return 0;
+    } else return 3;
+  }
+
+  // modifica la password di $username. Ritorna false in caso di errore, true altrimenti
+  public function editPassword($username, $password){
+    $hash = password_hash($password, PASSWORD_BCRYPT);
+
+    $stmt = $this->mysqli->prepare("UPDATE users SET password = ? WHERE username = ?");
+    $stmt->bind_param("ss", $hash, $username);
+    $success = $stmt->execute();
+    $stmt->close();
+
     return $success;
   }
 
-  // carica le statistiche dell'utente attuale nella variabile $_SESSION
-  // ritorna false in caso di errore, true in caso di successo
-  public function loadStats(){
-    if(isset($_SESSION["login"]) && $_SESSION["login"] && isset($_SESSION['username'])){
-      //non c'è rischio di sql injection
-      $result = $this->mysqli->query("SELECT highscore, avgscore, hscore FROM users WHERE username = '{$_SESSION['username']}'");
-      if($result->num_rows == 0){
-        $result->close();
-        return false;
-      }
-      while($row = $result->fetch_assoc()) {
-        $_SESSION['highscore'] = $row['highscore'];
-        $_SESSION['hscore'] = $row['hscore'];
-        $_SESSION['avgscore'] = $row['avgscore'];
+  // elimina l'account $username. Ritorna false in caso di errore, true altrimenti
+  public function deleteAccount($username){
+    $stmt = $this->mysqli->prepare("DELETE FROM users WHERE username = ?");
+    $stmt->bind_param("s", $username);
+    $success = $stmt->execute();
+    $stmt->close();
 
-        $result->close();
-        return true;
-      }
-    } else{
+    return $success;
+  }
+
+  // carica le statistiche di $username
+  // ritorna false in caso di errore, true in caso di successo
+  public function loadStats($username){
+    $stmt = $this->mysqli->prepare("SELECT highscore, avgscore, hscore FROM users WHERE username = ?");
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if($result->num_rows == 0){
+      $result->close();
+      $stmt->close();
       return false;
+    }
+    while($row = $result->fetch_assoc()) {
+      $_SESSION['highscore'] = $row['highscore'];
+      $_SESSION['hscore'] = $row['hscore'];
+      $_SESSION['avgscore'] = $row['avgscore'];
+
+      $result->close();
+      $stmt->close();
+      return true;
     }
   }
 

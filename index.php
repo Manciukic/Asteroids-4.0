@@ -5,7 +5,7 @@
   if ($loggedIn){
     include_once("includes/db_helper.php");
     $db = new DBHelper;
-    $db->loadStats();
+    $db->loadStats($_SESSION['username']);
     $db->close();
   }
 

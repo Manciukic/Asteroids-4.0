@@ -24,7 +24,6 @@
 
   $title = "Asteroids 4.0 - Classifica";
   $section = 2;
-  $include_js = [];
   $include_css = ['table'];
   include_once("includes/header.php");
 ?>

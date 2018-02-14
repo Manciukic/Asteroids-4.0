@@ -2,8 +2,7 @@
   session_start();
   $title = "Asteroids 4.0 - Guida";
   $section = 1;
-  $include_js = [];
-  $include_css = ['guide'];
+  $include_css = ['article'];
   include_once("includes/header.php");
 ?>
 <main>

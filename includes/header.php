@@ -43,8 +43,8 @@
               $type = 0;
           ?>
 
-          <li><a href="<?php echo $type==0?"login.php":($type==1?"profile.php":"exit.php");?>"
-            title="<?php echo $type==0?"Accedi":($type==1?"Proflo":"Esci");?>"
+          <li><a href="<?php echo $type==0?"login.php":($type==1?"stats.php":"exit.php");?>"
+            title="<?php echo $type==0?"Accedi":($type==1?"Profilo":"Esci");?>"
             <?php if(isset($section) && $section==3) echo 'class="active"'?>>
             <?php echo $type==0?"Accedi":($type==1?$_SESSION['username']:"Esci");?>
           </a></li>
