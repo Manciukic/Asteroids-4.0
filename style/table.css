@@ -89,10 +89,28 @@ thead{
 
 .arrows a{
   text-align: center;
+  width: 25%;
   text-decoration: none;
   font-size: 0.8em;
   border: 1px solid white;
-  padding: 16px;
+  margin: -1px;
+  padding: 16px 0;
+  color: white;
+}
+
+.arrows .empty{
+  display: inline-block;
+  height: 0.8em;
+  margin: 16px 0;
+  width: 25%;
+  float: left;
+}
+
+.arrows p{
+  display: inline-block;
+  text-align: center;
+  width: 50%;
+  margin: 16px 0;
   color: white;
 }
 

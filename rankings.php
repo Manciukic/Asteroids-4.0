@@ -59,7 +59,11 @@
     <div class="arrows">
       <?php if($page>0){ ?>
         <a class="left" href="?type=<?php echo $tipo;?>&page=<?php echo $page-1;?>">&lt;</a>
-      <?php } if($page < $n_pages-1){ ?>
+    <?php } else {?>
+      <div class='empty'> </div>
+    <?php } ?>
+      <p><?php echo "{$page}/{$n_pages}"; ?></p>
+      <?php if($page < $n_pages-1){ ?>
         <a class="right" href="?type=<?php echo $tipo;?>&page=<?php echo $page+1;?>">&gt;</a>
       <?php } ?>
     </div>
