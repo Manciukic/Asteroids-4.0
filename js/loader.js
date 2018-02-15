@@ -31,7 +31,7 @@ function Loader(){
       case 'audio':
         this.elements[URI] = new Audio(URI);
         this.status[URI] = false;
-        this.elements[URI].onload = function (){
+        this.elements[URI].oncanplaythrough  = function (){
           console.log(URI);
           that.status[URI] = true;
         };
@@ -46,7 +46,7 @@ function Loader(){
     var total = Object.keys(mLoader.elements).length;
     var count = 0;
     for (var s in this.status)
-      count += s?1:0;
+      count += this.status[s]?1:0;
     var progress = count/total * 100;
     return progress;
   };
