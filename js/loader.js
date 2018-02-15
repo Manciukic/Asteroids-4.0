@@ -41,11 +41,11 @@ function Loader(){
 
   // Richiedi il progresso in percentuale
   this.getProgress = function (){
+    var total = Object.keys(mLoader.elements).length;
     var count = 0;
     for (var s in this.status)
       count += s?1:0;
-    var progress = count/this.elements.length * 100;
-    console.log(progress);
+    var progress = count/total * 100;
     return progress;
   };
 }
