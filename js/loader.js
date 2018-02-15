@@ -24,6 +24,7 @@ function Loader(){
         this.elements[URI].src = URI;
         this.status[URI] = false;
         this.elements[URI].onload = function (){
+          console.log(URI);
           that.status[URI] = true;
         };
         break;
