@@ -32,6 +32,7 @@ function Loader(){
         this.elements[URI] = new Audio(URI);
         this.status[URI] = false;
         this.elements[URI].onload = function (){
+          console.log(URI);
           that.status[URI] = true;
         };
         break;
