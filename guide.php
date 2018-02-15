@@ -7,6 +7,7 @@
 ?>
 <main>
   <article>
+  <h1>Guida</h1>
     <h2>Introduzione</h2>
       <img class="left" src="img/carl_fredricksen.png" alt="Foto del nostro eroe"/>
       <p>Spazio, anno 4018. Carl Fredricksen sta tornando a casa da una missione spaziale nella galassia Salto Angel, dove si era recato per studiare i resti di uno struzzo preistorico, quando si imbatte in una fascia di asteroidi. </p>
