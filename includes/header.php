@@ -6,17 +6,17 @@
 
     <link rel="icon" type="image/png" href="favicon.ico"/>
 
-    <link rel="stylesheet" type="text/css" href="style/styles.css">
     <link rel="stylesheet" type="text/css" href="style/fonts.css">
+    <link rel="stylesheet" type="text/css" href="style/styles.css">
     <?php
       if (isset($include_css)){
         foreach ($include_css as $key => $value) {
-          echo "<link rel='stylesheet' type='text/css' href='style/{$value}.css'>\n";
+          echo "    <link rel='stylesheet' type='text/css' href='style/{$value}.css'>\n";
         }
       }
       if (isset($include_js)){
         foreach ($include_js as $key => $value) {
-          echo "<script src='js/{$value}.js'></script>\n";
+          echo "    <script src='js/{$value}.js'></script>\n";
         }
       }
     ?>
