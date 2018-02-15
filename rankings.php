@@ -43,7 +43,7 @@
       </tr>
     </thead>
     <tbody><?php
-      $pos = 0;
+      $pos = $page*ITEMS_PER_PAGE;
       $old = -1;
       foreach ($array as $key => $value) {
         $pos = $old != $value['score'] ? $pos+1 : $pos;
