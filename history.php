@@ -47,7 +47,7 @@
       <?php } else {?>
         <div class='empty'> </div>
       <?php } ?>
-        <p><?php echo "{$page}/{$n_pages}"; ?></p>
+        <p><?php echo ($page+1)."/"."$n_pages"; ?></p>
       <?php if($page < $n_pages-1){ ?>
         <a class="right" href="?page=<?php echo $page+1;?>">&gt;</a>
       <?php } ?>
