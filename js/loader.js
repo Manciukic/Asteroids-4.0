@@ -44,7 +44,9 @@ function Loader(){
     var count = 0;
     for (var s in this.status)
       count += s?1:0;
-    return count/this.elements.length * 100;
+    var progress = count/this.elements.length * 100;
+    console.log(progress);
+    return progress;
   };
 }
 
