@@ -1,3 +1,4 @@
+// Classe per caricare le risorse del gioco
 function Loader(){
   // Oggetto per i callback
   var that = this;
@@ -6,13 +7,12 @@ function Loader(){
   this.elements = {};
   this.status = {};
 
-  // Ritorna l'immagine caricats
+  // Ritorna l'immagine caricata
   this.get = function (elementURI){
     if (elementURI in this.elements)
       return this.elements[elementURI];
     else{
       console.warn(elementURI + " not found!");
-      return undefined;
     }
   };
 
@@ -24,7 +24,7 @@ function Loader(){
         this.elements[URI].src = URI;
         this.status[URI] = false;
         this.elements[URI].onload = function (){
-          console.log(URI);
+          // quando viene caricata setta true lo status
           that.status[URI] = true;
         };
         break;
@@ -32,7 +32,7 @@ function Loader(){
         this.elements[URI] = new Audio(URI);
         this.status[URI] = false;
         this.elements[URI].oncanplaythrough  = function (){
-          console.log(URI);
+          // quando viene caricata setta true lo status
           that.status[URI] = true;
         };
         break;
@@ -51,28 +51,3 @@ function Loader(){
     return progress;
   };
 }
-
-var mLoader = new Loader;
-
-mLoader.load('assets/asteroidLarge.png', 'image');
-mLoader.load('assets/asteroidMedium.png', 'image');
-mLoader.load('assets/asteroidSmall.png', 'image');
-mLoader.load('assets/background.png', 'image');
-mLoader.load('assets/bullet.png', 'image');
-mLoader.load('assets/explosionLarge.png', 'image');
-mLoader.load('assets/explosionMedium.png', 'image');
-mLoader.load('assets/explosionSmall.png', 'image');
-mLoader.load('assets/ship.png', 'image');
-
-mLoader.load('assets/bangLarge.wav', 'audio');
-mLoader.load('assets/bangMedium.wav', 'audio');
-mLoader.load('assets/bangSmall.wav', 'audio');
-mLoader.load('assets/beat1.wav', 'audio');
-mLoader.load('assets/beat2.wav', 'audio');
-mLoader.load('assets/death.wav', 'audio');
-mLoader.load('assets/extraShip.wav', 'audio');
-mLoader.load('assets/fire.wav', 'audio');
-mLoader.load('assets/respawn.wav', 'audio');
-mLoader.load('assets/teleport.wav', 'audio');
-mLoader.load('assets/thrust.wav', 'audio');
-mLoader.load('assets/bonusTrack.mp3', 'audio');

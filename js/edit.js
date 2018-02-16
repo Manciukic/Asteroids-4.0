@@ -12,7 +12,6 @@ function validateForm (){
     return false;
   }
 
-
   errorMessage.style.display = "none";
   return true;
 }

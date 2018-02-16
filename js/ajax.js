@@ -1,3 +1,4 @@
+// Invia il punteggio al server
 function sendScore(score){
   try { xmlHttp=new XMLHttpRequest(); }
   catch (e) {
@@ -16,7 +17,6 @@ function sendScore(score){
   xmlHttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
   xmlHttp.onreadystatechange = function(){
     if (xmlHttp.readyState == 4){
-      console.log(xmlHttp.responseText);
       if (xmlHttp.responseText != 'ok'){
         window.alert("C'è stato un problema nell'upload del punteggio: " + xmlHttp.responseText);
       }

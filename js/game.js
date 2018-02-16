@@ -5,7 +5,7 @@ function rad(deg){
 
 // Classe di un oggetto di gioco generico
 function GameObject(width, height, spriteURI){
-  // that è l'oggetto quando sono in una funzione callback
+  // that è l'istanza della classe (this) quando sono in una funzione callback
   var that = this;
 
   // Proprietà geometriche dell'oggetto di gioco
@@ -14,16 +14,17 @@ function GameObject(width, height, spriteURI){
 
   // L'immagine dell'oggetto nel gioco
   this.spriteURI = spriteURI;
-  this.nSprite = 1;
+  this.nSprite = 1;                 //quanti sprite ci sono nell'immagine
   if (spriteURI !== undefined)
     this.sprite = mLoader.get(spriteURI);
-  this.currentSprite = 0;
-  this.spriteInterval = undefined;
-  this.spriteCounter = 0;
+  this.currentSprite = 0;           // parte sempre dal primo sprite dell'immagine
+  this.spriteInterval = undefined;  // dipende dall'animazione
+  this.spriteCounter = 0;           // timer
 
   // callback per la fine animazione. Ritorna true per fermare il disegno
   this.onAnimationEnd = null;
 
+  // posizione spaziale dell'oggetto
   this.position = {'x': 0, 'y': 0, 'theta': 0};
 
   //Imposta lo sprite
@@ -46,7 +47,6 @@ function GameObject(width, height, spriteURI){
     this.spriteInterval = interval;
     this.spriteCounter = position*interval;
   };
-
 
   // Sposta l'oggetto nella posizione desiderata
   this.moveTo = function(x, y){ // lo spazio è toroidale
@@ -96,6 +96,7 @@ function GameObject(width, height, spriteURI){
       this.currentSprite = 0;
     }
 
+    // nell'immagine gli sprite sono organizzati in due colonne
     var spritePosition = {
       'x': this.currentSprite % 2 == 0 ? 0 : this.width,
       'y': Math.floor(this.currentSprite / 2) * this.height
@@ -125,26 +126,33 @@ function GameObject(width, height, spriteURI){
   };
 }
 
+// Classe che rappresenta un asteroide generico
+// speed è il modulo della velocità
+//    la direzione della velocità è data dall'angolo iniziale dell'oggetto
+// angular_speed è il modulo della velocità di rotazione attorno al centro
 function Asteroid(width, height, spriteURI, position, speed, angular_speed){
   // setup inheritance
   this.base = GameObject;
   this.base(width, height, spriteURI);
 
+  // verranno definiti nelle classi derivate
   this.dimension = 'average';
   this.score = 0;
 
   if (position != undefined){
     this.moveTo(position.x, position.y);
+    this.rotateTo(position.theta);
     this.speed_theta = position.theta;
   }
 
   this.speed = speed;
+  this.angular_speed = angular_speed;
 
   this.movement = function (){
       this.move(this.speed * Math.cos(rad(this.speed_theta)),
                 this.speed * Math.sin(rad(this.speed_theta))
       );
-      this.rotate(angular_speed);
+      this.rotate(this.angular_speed);
   };
 }
 
@@ -214,6 +222,7 @@ function AsteroidSmall(position){
 
 AsteroidSmall.prototype = new Asteroid;
 
+// l'array di asteroidi con cui iniziare il livello
 function generateAsteroids(level){
   var n = level<5 ? level*2+2 : 12;
   var asteroids = new Array();
@@ -225,12 +234,14 @@ function generateAsteroids(level){
       'theta': Math.random()*360
     });
 
+    // se non collide con nessun altro asteroide appena generato o con la nave
     if (collides(newAsteroid, asteroids.concat(mGame.ship))==-1)
       asteroids.push(newAsteroid);
   }
   return asteroids;
 }
 
+// classe che definisce l'esplosione
 function Explosion(x, y, dimension){
   this.base = GameObject;
 
@@ -248,12 +259,14 @@ function Explosion(x, y, dimension){
       this.sound = mLoader.get('assets/bangLarge.wav');
       break;
     default:
-      console.log("Unknown dimension: " + dimension);
+      console.warn("Unknown dimension: " + dimension);
       return;
   }
 
+  // mi servirà per rimuovere le esplosioni complete dall'array
   this.dead = false;
 
+  // quando finisce l'animazione non disegnarlo più
   this.onAnimationEnd = function(){
     this.dead = true;
     return true;
@@ -261,13 +274,17 @@ function Explosion(x, y, dimension){
 
   this.moveTo(x, y);
 
-  //(spriteURI, width, height, nSprite, spriteInterval)
+  // imposta l'animazione
   this.changeSprite(this.spriteURI, this.width, this.height, 7, 5);
+
+  // fai partire l'audio dell'esplosione
   this.sound.play();
 }
 
+// Explosion è figlio di GameObject
 Explosion.prototype = new GameObject;
 
+// Classe che definisce il proiettile
 function Bullet(position){
   var SPEED = 30;  // velocità del proiettile
   this.ttl = 10;  // tempo di vita rimasto
@@ -284,77 +301,94 @@ function Bullet(position){
     }
   };
 
+  // mi servirà per rimuovere i proiettili dall'array
   this.checkDeath = function(){
     return this.ttl <= 0;
   };
-
 }
 
 // Bullet è figlio di GameObject
 Bullet.prototype = new GameObject(15, 7, 'assets/bullet.png');
 
+// Classe che rappresenta la navicella
 function Ship(){
   // Parametri di gioco
-  this.ACC_P = 0.3;         // accelerazione quando il propulsore è acceso
-  this.ACC_I = -0.05;       // accelerazione quando il propuòsore è spento
-  this.K_FRICTION = 0.001;  // coefficiente di resistenza aerodinamica
-  this.SHOOT_COOLDOWN = 10;       // tempo di attesa fra due proiettili consecutivi
-  this.TELEPORT_COOLDOWN = 30;       // tempo di attesa fra due teletrasporti
-  this.ANG_SPEED = 10;      // velocità angolare
-  this.SPRITE_INTERVAL = 2;  // ogni quanti frame cambia sprite
+  var ACC_P = 0.3;         // accelerazione quando il propulsore è acceso
+  var ACC_I = -0.05;       // accelerazione quando il propuòsore è spento
+  var K_FRICTION = 0.001;  // coefficiente di resistenza aerodinamica
+  var SHOOT_COOLDOWN = 10;       // tempo di attesa fra due proiettili consecutivi
+  var TELEPORT_COOLDOWN = 30;       // tempo di attesa fra due teletrasporti
+  var ANG_SPEED = 10;      // velocità angolare
+  var SPRITE_INTERVAL = 2;  // ogni quanti frame cambia sprite
 
   // flag morte
   this.dead = false;
+
+  //numero di vite rimaste
   this.lives = 3;
 
   // Suoni della navicella
   this.fireSound = mLoader.get('assets/fire.wav');
   this.thrustSound = mLoader.get('assets/thrust.wav');
   this.teleportSound = mLoader.get('assets/teleport.wav');
+  this.respawnSound = mLoader.get('assets/respawn.wav');
 
   // Posizione iniziale della navicella
   this.moveTo(Game.WIDTH/2, Game.HEIGHT/2);
-  this.rotateTo(-90);
+  this.rotateTo(-90); //verso l'alto
 
   // variabili di stato della navicella
   this.v = {'x': 0, 'y':0};         // velocità attuale
-  this.shootCooldown = 0;  // tempo di attesa prima di poter lanciare un proiettile
-  this.teleportCooldown = 0;
+  this.shootCooldown = 0;  // timer per il tempo di attesa fra due proiettili consecutivi
+  this.teleportCooldown = 0; // timer per il tempo di attesa fra due teletrasporti consecutivi
 
   // imposta lo sprite  (spriteURI, width, height, nSprite, spriteInterval)
   this.changeSprite(this.spriteURI, this.width, this.height, 2, undefined);
+
+  // propulsori attivi
   var thrustOn = false;
 
   // funzione per tornare in vita
   this.respawn = function (){
-    console.log("HEROES NEVER DIE!");
-    if (this.lives > 1){
+    if (this.lives > 1){  // se non ha finito le vite
+      // togli una vita
       this.lives --;
+
+      // riporta in vita la navicella
       this.dead = false;
+
+      // riposiziona la navicella al centro
       this.moveTo(Game.WIDTH/2, Game.HEIGHT/2);
       this.rotateTo(-90);
+
+      // azzera la velocità
       this.v.x = this.v.y = 0;
+
+      // azzera i timer
       this.shootCooldown = 0;
       this.teleportCooldown = 0;
 
-      mLoader.get('assets/respawn.wav').play();
-    } else {
-        console.warn("ALL YOUR BASE ARE BELONG TO US!");
+      this.respawnSound.play();
     }
   };
 
   // funzione per sparare
   this.shoot = function () {
+    // aggiunge un nuovo proiettile
     mGame.bullets.push(new Bullet(this.position));
-    // TODO audio
+
+    // fa partire l'audio
     this.fireSound.play();
   };
 
   //funzione per teletrasporto
   this.teleport = function(){
+    // teletrasporta la navicella
     this.moveTo(Math.random()*Game.WIDTH, Math.random()*Game.HEIGHT);
+
+    // fa partire l'audio
     this.teleportSound.play();
-  }
+  };
 
   this.movement = function (){
     // Aggiorna le variabili di stato
@@ -364,33 +398,35 @@ function Ship(){
 
     // Accelerazione dovuta all'attrito con il mezzo fluido
     if (vMod > 0){
-      acceleration.x -= this.K_FRICTION * Math.pow(vMod, 2) * versoreV.x;
-      acceleration.y -= this.K_FRICTION * Math.pow(vMod, 2) * versoreV.y;
+      acceleration.x -= K_FRICTION * Math.pow(vMod, 2) * versoreV.x;
+      acceleration.y -= K_FRICTION * Math.pow(vMod, 2) * versoreV.y;
     }
 
-    // Accelerazione dovuta alla propulsione
+    // Accelerazione dovuta alla propulsione. Solo se sta premendo freccia su
     if (keyboard[UP_KEY]){
-      acceleration.x += this.ACC_P*Math.cos(rad(this.position.theta));
-      acceleration.y += this.ACC_P*Math.sin(rad(this.position.theta));
+      acceleration.x += ACC_P*Math.cos(rad(this.position.theta));
+      acceleration.y += ACC_P*Math.sin(rad(this.position.theta));
 
-      // Play thrust sound
+      // fa partire l'audio
       if (this.thrustSound.paused)
         this.thrustSound.play();
 
-      // Start moving  sprite
+      // Se non si stava muovendo, fai partire l'animazione
       if (!thrustOn){
-        this.playSprite(1, this.SPRITE_INTERVAL);
+        this.playSprite(1, SPRITE_INTERVAL);
         thrustOn = true;
       }
 
     } else {
-      // pause thrust sound
+      // ferma l'audio
       if (!this.thrustSound.paused){
         this.thrustSound.pause();
         this.thrustSound.currentTime = 0;
       }
 
       thrustOn = false;
+
+      // ferma l'animazione e ritorna al primo sprite
       this.stopSpriteAt0();
     }
 
@@ -400,19 +436,23 @@ function Ship(){
 
     // Ruoto la navicella
     if (keyboard[LEFT_KEY] && !keyboard[RIGHT_KEY]){
-      this.rotate(-this.ANG_SPEED);
+      this.rotate(-ANG_SPEED);
     }
     if (!keyboard[LEFT_KEY] && keyboard[RIGHT_KEY]){
-      this.rotate(+this.ANG_SPEED);
+      this.rotate(+ANG_SPEED);
     }
 
     // Muovo la navicella
     if (this.teleportCooldown <= 0 && keyboard[SHIFT_KEY]){
+      // Se si sta teletrasportando
       this.teleport();
-      this.teleportCooldown = this.TELEPORT_COOLDOWN;
-    } else{
+      this.teleportCooldown = TELEPORT_COOLDOWN;
+    } else{ //Altrimenti
       this.move(this.v.x, this.v.y);
-      this.teleportCooldown --;
+
+      // decrementa il timer per il teletrasporto se necessario
+      if (this.teleportCooldown > 0)
+        this.teleportCooldown --;
     }
 
     // Controllo per il lancio del proiettile
@@ -420,7 +460,7 @@ function Ship(){
       this.shootCooldown --;
     else if(keyboard[SPACE_KEY]){
       this.shoot();
-      this.shootCooldown = this.SHOOT_COOLDOWN;
+      this.shootCooldown = SHOOT_COOLDOWN;
     }
   };
 }
@@ -439,7 +479,7 @@ function Game(){
   var IMMUNITY_INTERVAL = 50;
   var CHANGE_SOUND_INTERVAL = 30;
 
-  // il canvas è inizializzato dall'init
+  // il canvas è inizializzato dal main tramite il metodo setCanvas
   this.canvas = null;
   this.context = null;
   this.setCanvas = function (canvas){
@@ -456,14 +496,18 @@ function Game(){
   // Audio di gioco
   this.beat1Sound = mLoader.get('assets/beat1.wav');
   this.beat2Sound = mLoader.get('assets/beat2.wav');
-  this.soundCounter = 0;
+  this.soundCounter = 0;  // timer per l'audio di sottofondo
+
   this.bonusTrack = mLoader.get('assets/bonusTrack.mp3');
   this.bonusTrack.loop = true;
   this.bonusTrackActivated = false;
-  this.changeSoundCooldown = 0;
+
+  this.changeSoundCooldown = 0; // timer per il cambio della traccia audio
+
+  this.deathSound = mLoader.get('assets/death.wav');
+  this.extraShipSound = mLoader.get('assets/extraShip.wav');
 
   // sfondo
-  this.backgroundloaded = false;
   this.background = mLoader.get('assets/background.png');
 
   //punteggio e livello
@@ -482,8 +526,10 @@ function Game(){
   //callback per il gioco in pausa
   this.onPause = null;
 
+  // id dell'interval
   var loopInterval;
 
+  // inizia il gioco
   this.start = function (){
     this.level = 0;
     this.score = 0;
@@ -491,6 +537,7 @@ function Game(){
     loopInterval = setInterval('mGame.loop()', 30);
   };
 
+  // mette in pausa il gioco
   this.pause = function (){
     clearInterval(loopInterval);
 
@@ -502,13 +549,16 @@ function Game(){
     }
   }
 
+  // riprendi il gioco dalla pausa
   this.resume = function(){
     loopInterval = setInterval('mGame.loop()', 30);
   }
 
+  // termina il gioco
   this.end = function(){
     clearInterval(loopInterval);
 
+    // disegna tutte le scritte
     this.drawMessage('GAME OVER', 50, false);
     this.drawSubMessage('PUNTEGGIO: ' + this.score, 25, 50);
     this.drawSubMessage('Clicca di nuovo per rigiocare', 12, 220);
@@ -516,11 +566,14 @@ function Game(){
       this.drawSubMessage('NUOVO RECORD', 25, -100);
     }
 
-    mLoader.get('assets/death.wav').play();
+    // fa partire l'audio
+    this.deathSound.play();
 
-    if (this.bonusTrack != null)
+    // ferma la musica di sottofondo
+    if (!this.bonusTrack.paused)
       this.bonusTrack.pause();
 
+    // chiama il callback se definito
     if (this.onEnd != null)
       this.onEnd();
   };
@@ -546,18 +599,31 @@ function Game(){
     this.immunityCounter = IMMUNITY_INTERVAL - 1;
   };
 
+  // metodo per rimuovere un asteroide
+  // azioni che deve fare:
+  //    - aumentare il punteggio
+  //    - creare l'esplosione
+  //    - rimuovere l'asteroide dall'Array
+  //    - aggiungere all'array nuovi asteroidi più piccoli
+  //      la cui direzione di movimento dipende da theta
   this.destroyAsteroid = function (asteroidIdx, theta){
-    //crea un'esplosione
     var dim = this.asteroids[asteroidIdx].dimension;
     var pos = this.asteroids[asteroidIdx].position;
+
+    // aumenta il punteggio
     this.score += this.asteroids[asteroidIdx].score;
+
+    // crea un'esplosione
     this.explosions.push(new Explosion(
             this.asteroids[asteroidIdx].position.x,
             this.asteroids[asteroidIdx].position.y,
             dim)
     );
+
+    // rimuove dall'array l'asteroide
     this.asteroids.splice(asteroidIdx, 1);
 
+    // aggiunge all'array nuovi asteroidi più piccoli
     switch(dim){
       case 'large':
         this.asteroids.push(new AsteroidMedium({
@@ -587,60 +653,82 @@ function Game(){
         break;
       default:
         console.warn("Unrecognized dimension " + dim);
-    };
-  }
+    }
+  };
 
   // main game loop
   this.loop = function (){
+    // --- AZIONI PRELIMINARI ---
+
+    // variabili per salvare se ci sono stati cambiamenti
+    // saranno poi passate al callback per aggiornare punteggio / vite
     var scoreChanged = false;
     var livesChanged = false;
 
     //Check fine gioco
-    if (this.ship.dead){
-      if (this.ship.lives <= 1){
-        if (this.explosions.length == 0){
+    if (this.ship.dead){  // se la navicella è morta
+      if (this.ship.lives <= 1){  // e non ha più vite
+        if (this.explosions.length == 0){ // e sono finite le animazioni delle esplosioni
+          // game over
           this.end();
           return;
         }
-      } else {
-        if (this.respawnCounter > 0){
+      } else {  // se ha ancora altre vite
+        if (this.respawnCounter > 0){ // se non è finito il timer per rinascere
+          // decrementa il timer
           this.respawnCounter --;
-        } else{
+        } else{ // se può rinascere
+          // reimposta il timer
           this.respawnCounter = RESPAWN_INTERVAL;
+
+          //fa rinascere la nave
           this.ship.respawn();
+
+          // memorizza il cambiamento del numero di vite
           livesChanged = true;
-          this.immunityCounter --;  // inizia l'immunità
+
+          // inizia l'immunità
+          this.immunityCounter --;
         }
       }
     }
 
-    // Audio in background
-    if (this.changeSoundCooldown == 0){
-      if(keyboard[M_KEY]){
+    // --- AUDIO ---
+
+    // Cambio audio in background
+    if (this.changeSoundCooldown == 0){ // se è finito il timer fra due cambiamenti
+      if(keyboard[M_KEY]){              // e l'utente vuole cambiare musica
+        // cambia musica
         this.bonusTrackActivated = !this.bonusTrackActivated;
+
+        // resetta il timer
         this.changeSoundCooldown = CHANGE_SOUND_INTERVAL;
       }
-    } else{
+    } else{ // se non è finito il timer, decrementalo
       this.changeSoundCooldown --;
     }
 
-    if (!this.bonusTrackActivated){
-      if (!this.bonusTrack.paused)
-        this.bonusTrack.pause();
-      this.soundCounter ++;
-      if (this.soundCounter % BEAT_INTERVAL == 0){
-        if (Math.floor(this.soundCounter / BEAT_INTERVAL) % 2 == 0){
-          this.beat1Sound.play();
+    // Audio in background
+    if (!this.bonusTrackActivated){ // se è attivato l'audio normale
+      if (!this.bonusTrack.paused)  // ma non è ancora stato fermato quello bonus
+        this.bonusTrack.pause();    // fermalo
+      this.soundCounter ++;         // aumenta il timer per l'intervallo fra due "battiti"
+      if (this.soundCounter % BEAT_INTERVAL == 0){  // se è multiplo di BEAT_INTERVAL
+        if (Math.floor(this.soundCounter / BEAT_INTERVAL) % 2 == 0){  // e il quoziente è pari
+          this.beat1Sound.play();   // allora riproduci il primo "battito"
         } else {
-          this.beat2Sound.play();
+          this.beat2Sound.play();   // altrimenti riproduci il secondo "battito"
         }
+        // per evitare overflow, azzero soundCounter quando sono stati riprodotti entrambi i "battiti"
         if (this.soundCounter >= BEAT_INTERVAL*2)
           this.soundCounter = 0;
       }
-    } else{
-        if (this.bonusTrack.paused)
-          this.bonusTrack.play();
+    } else{                         // se è attivato l'audio bonus
+        if (this.bonusTrack.paused) // ma è in pausa
+          this.bonusTrack.play();   // riattivalo
     }
+
+    // --- INIZIALIZZAZIONE ---
 
     // cancello il frame precedente
     this.context.clearRect(0, 0,
@@ -648,32 +736,34 @@ function Game(){
       this.canvas.height
     );
 
-    //disegno lo sfondo
+    // disegno lo sfondo
     this.context.drawImage(this.background, 0, 0,
       this.canvas.width,
       this.canvas.height
     );
 
-    // Movimento degli oggetti del gioco
-    //Navicella
+    // --- MOVIMENTO ---
+
+    // Navicella
     if(!this.ship.dead)
       this.ship.movement();
 
-    //Asteroidi
-    if (this.asteroids.length == 0){
-      this.level ++;
-      this.asteroids = generateAsteroids(this.level);
-      this.immunityCounter --;  // rendo immune per un po' per evitare inconvenienti\
+    // Asteroidi
+    if (this.asteroids.length == 0){  // se ha distrutto tutti gli asteroidi
+      this.level ++;                  // aumenta il livello
+      this.asteroids = generateAsteroids(this.level); // ripopola la mappa
+      this.immunityCounter --;  // rendo immune per un po' per evitare inconvenienti
     }
+    // Muovo gli asteroidi
     for (var idx in this.asteroids){
       this.asteroids[idx].movement();
     }
 
     //Proiettili
     for (var i=this.bullets.length-1; i>=0; i--){
-      if (!this.bullets[i].checkDeath()){
+      if (!this.bullets[i].checkDeath()){ //se "vivi"
         this.bullets[i].movement();
-      } else {
+      } else {  // se "morti"
         this.bullets.splice(i,1);
       }
     }
@@ -685,96 +775,126 @@ function Game(){
       }
     }
 
-    // Controllo delle collisioni
-    // Con navicella
-    if (!this.ship.dead){
-      // se la navicella non è immune
-      if (this.immunityCounter == IMMUNITY_INTERVAL){
+    // --- COLLISIONI ---
+
+    // Asteroidi con navicella
+    if (!this.ship.dead){ // se la navicella è viva
+      if (this.immunityCounter == IMMUNITY_INTERVAL){ // e non è immune
+        // verifica la collisione con gli asteroidi
         var shipCollision = collides(this.ship, this.asteroids);
+
+        // se collide
         if (shipCollision != -1){
-          this.ship.dead = true;
-          this.explosions.push(new Explosion(
+          this.ship.dead = true;    // imposta la navicella come morta
+          this.explosions.push(new Explosion( // disegna l'esplosione
                   this.ship.position.x,
                   this.ship.position.y,
                   'large')
           );
+          // distrugge l'asteroide che l'ha colpita
           this.destroyAsteroid(shipCollision, this.ship.position.theta);
           scoreChanged = true;
         }
-      } else{
+      } else{ // se è immune aggiorno il timer
         if (this.immunityCounter > 0)
           this.immunityCounter --;
         else this.immunityCounter = IMMUNITY_INTERVAL;
       }
     }
 
-    // Con proiettili
-    for(var i = this.bullets.length-1; i>=0; i--){
+    // Asteroidi con proiettili
+    for(var i = this.bullets.length-1; i>=0; i--){  // per ogni proiettile
+      // cerco la collisione con un qualsiasi asteroide
       var bulletCollision = collides(this.bullets[i], this.asteroids);
-      if (bulletCollision != -1){ //se collide
+
+      if (bulletCollision != -1){ // se collide
         var theta = this.bullets[i].position.theta;
-        this.bullets.splice(i,1); //rimuovi il proiettile
+        this.bullets.splice(i,1); // rimuovi il proiettile
         this.destroyAsteroid(bulletCollision, theta);
+
+        // segnala il cambiamento del punteggio
         scoreChanged = true;
       }
     }
 
-    // Rendering degli oggetti
+    // --- RENDERING ---
+
+    // Navicella
     if (!this.ship.dead){
       this.ship.draw();
     }
+
+    // Asteroidi
     for (var idx in this.asteroids){
       this.asteroids[idx].draw();
     }
+
+    // Proiettili
     for (var idx in this.bullets){
       this.bullets[idx].draw();
     }
+
+    // Esplosioni
     for (var idx in this.explosions){
       this.explosions[idx].draw();
     }
 
+    // --- AZIONI FINALI ---
+
+    // Verifica l'idoneità alla vita bonus
     if (this.score > 10000 * (this.bonusLives+1)){
       this.bonusLives ++;
       this.ship.lives ++;
-      mLoader.get('assets/extraShip.wav').play();
+      this.extraShipSound.play();
     }
 
+    // Chiama il callback
     if(this.onLoop != null)
       this.onLoop(scoreChanged, livesChanged);
 
+    // Verifica che l'utente non voglia mettere in pausa
     if(keyboard[P_KEY] || keyboard[ESC_KEY])
       this.pause();
   };
 
+
+  // Cambia la dimensione del canvas in base a width e height della window
   this.resize = function(width, height){
-    var SCALE = 0.7;
-    //console.log(width + " x " + height);
+    var SCALE = 0.7;  // costante
     var w, h;
-    if (width/height > Game.WIDTH/Game.HEIGHT){
+
+    if (width/height > Game.WIDTH/Game.HEIGHT){ // se lo schermo è più largo del gioco (4:3)
       w = height * Game.WIDTH/Game.HEIGHT * SCALE;
       h = height * SCALE;
-    } else if (width/height < Game.WIDTH/Game.HEIGHT){
+    } else if (width/height < Game.WIDTH/Game.HEIGHT){ // se lo schermo è più stretto del gioco (4:3)
       w = width * SCALE;
       h = width * Game.HEIGHT/Game.WIDTH * SCALE;
+    } else{
+      w = width * SCALE;
+      h = height * SCALE;
     }
-    if (w !== undefined && !isNaN(w) && h !== undefined && !isNaN(h)){
-      // this.canvas.style.marginLeft  = (width - w - 15)/2 + 'px';
-      // this.canvas.style.marginRight = (width - w - 15)/2 + 'px';
+
+    // se non ci sono stati errori
+    // (non dovrebbe ma essendo una funzione delicata un controllo in più non fa male)
+    if (!isNaN(w) && !isNaN(h)){
       this.canvas.width = w;
       this.canvas.height = h;
-      console.log(w + " x " + h);
       return w;
-    }
-    return -1;
+    } else
+      return -1;
   };
 
+
+  // Disegna un messaggio centrato con stritto text di grandezza fontSize
+  // Può essere specificato se lasciare il canvas così com'è o se "pulirlo" (wipe)
   this.drawMessage = function(text, fontSize, wipe){
     var x = this.canvas.width / 2;
     var y = this.canvas.height / 2;
 
+    // Scala il font in base alla dimensione del canvas
     fontSize = Math.floor(fontSize * this.canvas.width/Game.WIDTH);
 
-    // pulisco tutto
+    // pulisco tutto se richiesto
     if(wipe){
       this.context.clearRect(0, 0,
         this.canvas.width,
@@ -791,10 +911,14 @@ function Game(){
     this.context.restore();
   };
 
+  // Disegna un messaggio con stritto text di grandezza fontSize
+  // Il messaggio è centrato orizzontalmente e si discosta di verticalShift dal
+  // centro verticale
   this.drawSubMessage = function(text, fontSize, verticalShift){
     var x = this.canvas.width / 2;
     var y = this.canvas.height / 2 + verticalShift;
 
+    // Scala il font in base alla dimensione del canvas
     fontSize = Math.floor(fontSize * this.canvas.width/Game.WIDTH);
 
     // disegno
@@ -805,7 +929,7 @@ function Game(){
     this.context.fillText(text, x, y, this.canvas.width);
     this.context.restore();
   };
-}
+} // fine della classe Game
 
 // Variabili statiche
 // Dimensioni del campo di gioco
@@ -813,7 +937,9 @@ Game.WIDTH = 640;
 Game.HEIGHT = 480;
 Game.PADDING = 25;
 
-// Stima sulla possibilità di collisione fra obj e obstacle
+// Stima veloce sulla possibilità di collisione fra obj e obstacle
+// controlla se la distanza fra gli oggetti è maggiore del massimo della somma
+// delle metà delle loro altezze o larghezze
 function mayCollide(obj, obstacle){
   var d = Math.sqrt(Math.pow(obj.position.x - obstacle.position.x, 2),
                     Math.pow(obj.position.y - obstacle.position.y, 2)
@@ -822,8 +948,8 @@ function mayCollide(obj, obstacle){
   return d <= maxD;
 }
 
-
-// Trasforma le coordinate di v nel SR di centro O e ruotato di theta
+// Trasforma le coordinate di v nel SR di centro O e ruotato di theta radianti
+// pos è un booleano e indica se va sommato o sottratto o.* da v.*
 function rototranslation(v, o, theta, pos){
   // Coordinate di v nel SR con centro in O
   var relPosT = {
@@ -869,28 +995,18 @@ function shadowOverlapes(obj, obstacle){
     rad(obstacle.position.theta),
     true
   );
-  var test1 = rototranslation(
-    {'x': obj.width/2, 'y': obj.height/2},
-    {'x': 0, 'y': 0},
-    rad(obstacle.position.theta),
-    true
-  );
 
   // calcolo le coordinate assolute
   A = rototranslation(A, obstacle.position, 0, false);
   B = rototranslation(B, obstacle.position, 0, false);
   C = rototranslation(C, obstacle.position, 0, false);
   D = rototranslation(D, obstacle.position, 0, false);
-  var test2 = rototranslation(test1, obj.position, 0, false);
 
   // Trovo le loro coordinate sul SR descritto sopra
   A = rototranslation(A, obj.position, theta, true);
   B = rototranslation(B, obj.position, theta, true);
   C = rototranslation(C, obj.position, theta, true);
   D = rototranslation(D, obj.position, theta, true);
-  var test = rototranslation(test2, obj.position, theta, true);
-
-  //console.log("test: from (" + obj.width/2 + ", " + obj.height/2 + ") to (" + test.x + ", "+ test.y + ")");
 
   // Trovo gli estremi della proiezione del rettangolo lungo gli assi
   var shadowX = [
@@ -909,20 +1025,19 @@ function shadowOverlapes(obj, obstacle){
     || (shadowY[0] < -obj.height/2 && shadowY[1] < -obj.height/2));
 }
 
-//
+// Ritorna true se obj e obstacle collidono
 function reallyCollides(obj, obstacle){
   return shadowOverlapes(obj, obstacle) && shadowOverlapes(obstacle, obj);
 }
 
-// Verifica la collisione fra obj e uno degli obstacles
+// Verifica la collisione fra obj e ogni ostacolo in obstacles
+// Ritorna l'indice dell'oggetto che collide oppure -1
 function collides(obj, obstacles){
-  var start = Date.now();
   for (var idx in obstacles){
-    if (mayCollide(obj, obstacles[idx]))
-      if (reallyCollides(obj, obstacles[idx]))
-        return idx;
+    if (mayCollide(obj, obstacles[idx]))  // algoritmo veloce ma soggetto a falsi positivi
+      if (reallyCollides(obj, obstacles[idx]))  // algoritmo lento ma preciso
+        return idx; // collisione!
   }
-  var end = Date.now();
-  //console.log((start-end)+"ms");
+  // Nessuna collisione
   return -1;
 }
