@@ -17,7 +17,7 @@
       <p>Il font utilizzato &egrave; <i>Press Start 2P</i> disegnato da CodeMan38 e distribuito con licenza OpenFont all'indirizzo: <a target="_blank" href="https://fonts.google.com/specimen/Press+Start+2P">https://fonts.google.com/specimen/Press+Start+2P</a></p>
   <h2>Licenza d'uso</h2>
     <h3>Codice</h3>
-      <p>Il codice &egrave; interamente originale e sviluppato da Riccardo Mancini. Il codice &egrave; interamente open-source e consultabile su GitHub al seguente indirizzo: <a target="_blank" href="https://github.com/Manciukic/Asteroids-4.0">https://github.com/Manciukic/Asteroids-4.0</a></p>
+      <p>Il codice &egrave; interamente originale e sviluppato da Riccardo Mancini. Il codice &egrave; open-source e consultabile su GitHub al seguente indirizzo: <a target="_blank" href="https://github.com/Manciukic/Asteroids-4.0">https://github.com/Manciukic/Asteroids-4.0</a></p>
       <p>Il codice &egrave; distribuito con <a target="_blank" href="https://www.apache.org/licenses/LICENSE-2.0">licenza Apache 2.0</a></p>
   </article>
 </main>
