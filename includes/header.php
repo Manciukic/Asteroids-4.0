@@ -4,7 +4,7 @@
     <title><?php if(isset($title)) echo $title;?></title>
     <meta name="author" content="Riccardo Mancini">
 
-    <link rel="icon" type="image/png" href="favicon.ico"/>
+    <link rel="icon" type="image/png" href="img/favicon.ico"/>
 
     <link rel="stylesheet" type="text/css" href="style/fonts.css">
     <link rel="stylesheet" type="text/css" href="style/styles.css">
