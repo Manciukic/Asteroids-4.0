@@ -7,6 +7,8 @@ function Loader(){
   this.elements = {};
   this.status = {};
 
+  var baseURI = 'assets/';
+
   // Ritorna l'immagine caricata
   this.get = function (elementURI){
     if (elementURI in this.elements)
@@ -21,7 +23,7 @@ function Loader(){
     switch(type){
       case 'image':
         this.elements[URI] = new Image;
-        this.elements[URI].src = URI;
+        this.elements[URI].src = baseURI + URI;
         this.status[URI] = false;
         this.elements[URI].onload = function (){
           // quando viene caricata setta true lo status
@@ -29,7 +31,7 @@ function Loader(){
         };
         break;
       case 'audio':
-        this.elements[URI] = new Audio(URI);
+        this.elements[URI] = new Audio(baseURI + URI);
         this.status[URI] = false;
         this.elements[URI].oncanplaythrough  = function (){
           // quando viene caricata setta true lo status
@@ -51,3 +53,33 @@ function Loader(){
     return progress;
   };
 }
+
+// Inizializza l'oggetto globale per ottenere le risorse caricate
+var mLoader = new Loader;
+
+// Carica le risorse necessarie
+
+// immagini
+mLoader.load('asteroidLarge.png', 'image');
+mLoader.load('asteroidMedium.png', 'image');
+mLoader.load('asteroidSmall.png', 'image');
+mLoader.load('background.png', 'image');
+mLoader.load('bullet.png', 'image');
+mLoader.load('explosionLarge.png', 'image');
+mLoader.load('explosionMedium.png', 'image');
+mLoader.load('explosionSmall.png', 'image');
+mLoader.load('ship.png', 'image');
+
+// audio
+mLoader.load('bangLarge.wav', 'audio');
+mLoader.load('bangMedium.wav', 'audio');
+mLoader.load('bangSmall.wav', 'audio');
+mLoader.load('beat1.wav', 'audio');
+mLoader.load('beat2.wav', 'audio');
+mLoader.load('death.wav', 'audio');
+mLoader.load('extraShip.wav', 'audio');
+mLoader.load('fire.wav', 'audio');
+mLoader.load('respawn.wav', 'audio');
+mLoader.load('teleport.wav', 'audio');
+mLoader.load('thrust.wav', 'audio');
+mLoader.load('bonusTrack.mp3', 'audio');

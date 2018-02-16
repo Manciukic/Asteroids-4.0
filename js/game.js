@@ -4,9 +4,12 @@ function rad(deg){
 }
 
 // Classe di un oggetto di gioco generico
-function GameObject(width, height, spriteURI){
+function GameObject(width, height, spriteURI = ''){
   // that è l'istanza della classe (this) quando sono in una funzione callback
   var that = this;
+
+  // variabile booleana che indica lo stato del gioco
+  this.running = false;
 
   // Proprietà geometriche dell'oggetto di gioco
   this.width = width;
@@ -15,7 +18,7 @@ function GameObject(width, height, spriteURI){
   // L'immagine dell'oggetto nel gioco
   this.spriteURI = spriteURI;
   this.nSprite = 1;                 //quanti sprite ci sono nell'immagine
-  if (spriteURI !== undefined)
+  if (spriteURI != '')
     this.sprite = mLoader.get(spriteURI);
   this.currentSprite = 0;           // parte sempre dal primo sprite dell'immagine
   this.spriteInterval = undefined;  // dipende dall'animazione
@@ -30,7 +33,8 @@ function GameObject(width, height, spriteURI){
   //Imposta lo sprite
   this.changeSprite = function (spriteURI, width, height, nSprite, spriteInterval){
     this.spriteURI = spriteURI;
-    this.sprite = mLoader.get(spriteURI);
+    if (spriteURI != '')
+      this.sprite = mLoader.get(spriteURI);
     this.width = width;
     this.height = height;
     this.nSprite = nSprite;
@@ -173,7 +177,7 @@ function AsteroidLarge(position){
   var SPEED = Math.random() * (MAX_SPEED-MIN_SPEED+1) + MIN_SPEED;
   var ANGULAR_SPEED = Math.random() * (MAX_ANGULAR_SPEED-MIN_ANGULAR_SPEED+1) + MIN_ANGULAR_SPEED;
 
-  this.base(48, 48, 'assets/asteroidLarge.png', position, SPEED, ANGULAR_SPEED);
+  this.base(48, 48, 'asteroidLarge.png', position, SPEED, ANGULAR_SPEED);
   this.dimension = 'large';
   this.score = 20;
 }
@@ -194,7 +198,7 @@ function AsteroidMedium(position){
   var SPEED = Math.random() * (MAX_SPEED-MIN_SPEED+1) + MIN_SPEED;
   var ANGULAR_SPEED = Math.random() * (MAX_ANGULAR_SPEED-MIN_ANGULAR_SPEED+1) + MIN_ANGULAR_SPEED;
 
-  this.base(32, 32, 'assets/asteroidMedium.png', position, SPEED, ANGULAR_SPEED);
+  this.base(32, 32, 'asteroidMedium.png', position, SPEED, ANGULAR_SPEED);
   this.dimension = 'medium';
   this.score = 50;
 }
@@ -215,7 +219,7 @@ function AsteroidSmall(position){
   var SPEED = Math.random() * (MAX_SPEED-MIN_SPEED+1) + MIN_SPEED;
   var ANGULAR_SPEED = Math.random() * (MAX_ANGULAR_SPEED-MIN_ANGULAR_SPEED+1) + MIN_ANGULAR_SPEED;
 
-  this.base(16, 16, 'assets/asteroidSmall.png', position, SPEED, ANGULAR_SPEED);
+  this.base(16, 16, 'asteroidSmall.png', position, SPEED, ANGULAR_SPEED);
   this.dimension = 'small';
   this.score = 100;
 }
@@ -247,16 +251,16 @@ function Explosion(x, y, dimension){
 
   switch(dimension){
     case 'small':
-      this.base(41, 41, 'assets/explosionSmall.png');
-      this.sound = mLoader.get('assets/bangSmall.wav');
+      this.base(41, 41, 'explosionSmall.png');
+      this.sound = mLoader.get('bangSmall.wav');
       break;
     case 'medium':
-      this.base(58, 58, 'assets/explosionMedium.png');
-      this.sound = mLoader.get('assets/bangMedium.wav');
+      this.base(58, 58, 'explosionMedium.png');
+      this.sound = mLoader.get('bangMedium.wav');
       break;
     case 'large':
-      this.base(64, 64, 'assets/explosionLarge.png');
-      this.sound = mLoader.get('assets/bangLarge.wav');
+      this.base(64, 64, 'explosionLarge.png');
+      this.sound = mLoader.get('bangLarge.wav');
       break;
     default:
       console.warn("Unknown dimension: " + dimension);
@@ -308,7 +312,7 @@ function Bullet(position){
 }
 
 // Bullet è figlio di GameObject
-Bullet.prototype = new GameObject(15, 7, 'assets/bullet.png');
+Bullet.prototype = new GameObject(15, 7, 'bullet.png');
 
 // Classe che rappresenta la navicella
 function Ship(){
@@ -328,10 +332,10 @@ function Ship(){
   this.lives = 3;
 
   // Suoni della navicella
-  this.fireSound = mLoader.get('assets/fire.wav');
-  this.thrustSound = mLoader.get('assets/thrust.wav');
-  this.teleportSound = mLoader.get('assets/teleport.wav');
-  this.respawnSound = mLoader.get('assets/respawn.wav');
+  this.fireSound = mLoader.get('fire.wav');
+  this.thrustSound = mLoader.get('thrust.wav');
+  this.teleportSound = mLoader.get('teleport.wav');
+  this.respawnSound = mLoader.get('respawn.wav');
 
   // Posizione iniziale della navicella
   this.moveTo(Game.WIDTH/2, Game.HEIGHT/2);
@@ -343,7 +347,7 @@ function Ship(){
   this.teleportCooldown = 0; // timer per il tempo di attesa fra due teletrasporti consecutivi
 
   // imposta lo sprite  (spriteURI, width, height, nSprite, spriteInterval)
-  this.changeSprite(this.spriteURI, this.width, this.height, 2, undefined);
+  this.changeSprite(this.spriteURI, this.width, this.height, 2, '');
 
   // propulsori attivi
   var thrustOn = false;
@@ -466,7 +470,7 @@ function Ship(){
 }
 
 // Ship è la classe figlia di GameObject
-Ship.prototype = new GameObject(36, 32, 'assets/ship.png');
+Ship.prototype = new GameObject(36, 32, 'ship.png');
 
 // Classe che rappresenta il gioco
 function Game(){
@@ -494,21 +498,21 @@ function Game(){
   this.explosions = new Array();
 
   // Audio di gioco
-  this.beat1Sound = mLoader.get('assets/beat1.wav');
-  this.beat2Sound = mLoader.get('assets/beat2.wav');
+  this.beat1Sound = mLoader.get('beat1.wav');
+  this.beat2Sound = mLoader.get('beat2.wav');
   this.soundCounter = 0;  // timer per l'audio di sottofondo
 
-  this.bonusTrack = mLoader.get('assets/bonusTrack.mp3');
+  this.bonusTrack = mLoader.get('bonusTrack.mp3');
   this.bonusTrack.loop = true;
   this.bonusTrackActivated = false;
 
   this.changeSoundCooldown = 0; // timer per il cambio della traccia audio
 
-  this.deathSound = mLoader.get('assets/death.wav');
-  this.extraShipSound = mLoader.get('assets/extraShip.wav');
+  this.deathSound = mLoader.get('death.wav');
+  this.extraShipSound = mLoader.get('extraShip.wav');
 
   // sfondo
-  this.background = mLoader.get('assets/background.png');
+  this.background = mLoader.get('background.png');
 
   //punteggio e livello
   this.level = 0;
@@ -531,6 +535,8 @@ function Game(){
 
   // inizia il gioco
   this.start = function (){
+    this.running = true;
+
     this.level = 0;
     this.score = 0;
     this.bonusLives = 0;
@@ -539,10 +545,15 @@ function Game(){
 
   // mette in pausa il gioco
   this.pause = function (){
+    this.running = false;
+
     clearInterval(loopInterval);
 
     this.drawMessage("Gioco in pausa", 40, false);
     this.drawSubMessage("Clicca di nuovo per ripartire", 20, 40);
+
+    if(!this.bonusTrack.paused)
+      this.bonusTrack.pause();
 
     if (this.onPause != null){
       this.onPause();
@@ -551,11 +562,18 @@ function Game(){
 
   // riprendi il gioco dalla pausa
   this.resume = function(){
+    this.running = true;
+
+    if(this.bonusTrackActivated)
+      this.bonusTrack.play();
+
     loopInterval = setInterval('mGame.loop()', 30);
   }
 
   // termina il gioco
   this.end = function(){
+    this.running = false;
+
     clearInterval(loopInterval);
 
     // disegna tutte le scritte

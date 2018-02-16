@@ -1,6 +1,3 @@
-// Inizializza l'oggetto globale per ottenere le risorse caricate
-var mLoader = new Loader;
-
 // Inizializzo l'oggetto globale Game
 var mGame = new Game;
 
@@ -111,29 +108,16 @@ window.onload = function(){
   init();
 };
 
-// Carica le risorse necessarie
+// Avvisa l'utente prima di abbandonare la pagina
+function askUser(){
+  if (mGame.running){
+    mGame.pause();
+    return confirm("Se abbandoni questa pagina dovrai rincominciare da capo il gioco. Continuare?");
+  } else
+    return true;
+}
 
-// immagini
-mLoader.load('assets/asteroidLarge.png', 'image');
-mLoader.load('assets/asteroidMedium.png', 'image');
-mLoader.load('assets/asteroidSmall.png', 'image');
-mLoader.load('assets/background.png', 'image');
-mLoader.load('assets/bullet.png', 'image');
-mLoader.load('assets/explosionLarge.png', 'image');
-mLoader.load('assets/explosionMedium.png', 'image');
-mLoader.load('assets/explosionSmall.png', 'image');
-mLoader.load('assets/ship.png', 'image');
-
-// audio
-mLoader.load('assets/bangLarge.wav', 'audio');
-mLoader.load('assets/bangMedium.wav', 'audio');
-mLoader.load('assets/bangSmall.wav', 'audio');
-mLoader.load('assets/beat1.wav', 'audio');
-mLoader.load('assets/beat2.wav', 'audio');
-mLoader.load('assets/death.wav', 'audio');
-mLoader.load('assets/extraShip.wav', 'audio');
-mLoader.load('assets/fire.wav', 'audio');
-mLoader.load('assets/respawn.wav', 'audio');
-mLoader.load('assets/teleport.wav', 'audio');
-mLoader.load('assets/thrust.wav', 'audio');
-mLoader.load('assets/bonusTrack.mp3', 'audio');
+window.onblur = function(){
+  if (mGame.running)
+    mGame.pause();
+}
