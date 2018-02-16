@@ -38,6 +38,7 @@
         <p>Esistono tre tipologie di asteroidi: grandi, medi e piccoli. Questi, oltre che per dimensione, differiscono anche per velocità lineare e di rotazione in quanto quelli più piccoli sono anche più veloci.</p>
         <p>All'inizio della partite e ogni volta che vengono distrutti tutti gli asteroidi, compariranno un certo numero di asteroidi grandi (vedi sotto per sapere il numero corretto). Ogni volta che un asteroide grande o medio viene colpito, questo si frammenta in due asteroidi medi o piccoli, rispettivamente.</p>
         <p>Inizialmente il livello &egrave; pari ad 1 e aumenta ogni volta che vengono distrutti tutti gli asteroidi.</p>
+        <p>Numero di asteroidi grandi iniziali per livello:</p>
         <img id="asteroid-img" class="right" src="img/asteroids.png" alt="Asteroidi">
         <ul>
           <li class="pre">Livello 1:   4</li>
