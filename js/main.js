@@ -5,20 +5,11 @@ var mGame = new Game;
 function updateScore(score){
   var scoreP = document.getElementById("score");
 
-  // calcolo numero spazi per tabulazione
-  var n_space = 0;
-  var spaces = "";
-  if (score == 0){
-    spaces = "    ";
-  } else {
-    while (score < Math.pow(10, 4-n_space)){
-      n_space++;
-      spaces += " ";
-    }
-  }
+  // score su 5 caratteri riempiendo a sinistra di spazi vuoti se necessario
+  var paddedScore = ("     " + score).slice(-5);
 
   var record_string = loggedIn?("[RECORD " + highscore + "] "):"";
-  scoreP.textContent = record_string + "PUNTI "+ spaces + score;
+  scoreP.textContent = record_string + "PUNTI "+ paddedScore;
 }
 
 // funzione per aggiornare il numero di vite
