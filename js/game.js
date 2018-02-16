@@ -10,6 +10,7 @@ function GameObject(width, height, spriteURI){
 
   // variabile booleana che indica lo stato del gioco
   this.running = false;
+  this.started = false;
 
   // Proprietà geometriche dell'oggetto di gioco
   this.width = width;
@@ -536,6 +537,7 @@ function Game(){
   // inizia il gioco
   this.start = function (){
     this.running = true;
+    this.started = true;
 
     this.level = 0;
     this.score = 0;
@@ -573,6 +575,7 @@ function Game(){
   // termina il gioco
   this.end = function(){
     this.running = false;
+    this.started = false;
 
     clearInterval(loopInterval);
 

@@ -18,6 +18,12 @@ function updateLives(lives){
   livesP.textContent = "VITE " + lives;
 }
 
+function drawBeginMessage(){
+  mGame.drawMessage("Clicca qui per iniziare", 20, true);
+  if(!loggedIn)
+    mGame.drawSubMessage("Accedi o registrati per salvare il punteggio", 10, 20);
+}
+
 // funzione per cambiare dimensione al gioco
 function resizeGame(){
   var w = mGame.resize(window.innerWidth, window.innerHeight);
@@ -25,6 +31,10 @@ function resizeGame(){
   // aggiorna anche le dimensioni dell'area di gioco affinchè vite e punti
   // siano sempre allineati
   document.getElementById('game_area').style.width = w+'px';
+
+  // riscrive il messaggio iniziale se non è ancora iniziato il gioco
+  if (!mGame.started)
+    drawBeginMessage();
 }
 // quando la finestra cambia dimensioni, cambiale anche al gioco
 window.onresize = resizeGame;
@@ -51,9 +61,7 @@ function init(){
   if (mLoader.getProgress()<100)  // se non è pronto
     setTimeout("init()", 100);    // riprova fra 100ms
   else{
-    mGame.drawMessage("Clicca qui per iniziare", 20, true);
-    if(!loggedIn)
-      mGame.drawSubMessage("Accedi o registrati per salvare il punteggio", 10, 20);
+    drawBeginMessage();
 
     // quando l'utente clicca il canvas parte il gioco
     mGame.canvas.onclick = start;
