@@ -104,7 +104,7 @@ function init(){
 window.onload = function(){
   mGame.setCanvas(document.getElementById('game_canvas'));
   resizeGame();
-  mGame.drawMessage("Caricamento...", 50, true);
+  mGame.drawMessage("Caricamento...", 20, true);
   init();
 };
 
