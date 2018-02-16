@@ -583,7 +583,7 @@ function Game(){
     this.drawMessage('GAME OVER', 50, false);
     this.drawSubMessage('PUNTEGGIO: ' + this.score, 25, 50);
     this.drawSubMessage('Clicca di nuovo per rigiocare', 12, 220);
-    if(this.score > highscore){
+    if(loggedIn && this.score > highscore){
       this.drawSubMessage('NUOVO RECORD', 25, -100);
     }
 
