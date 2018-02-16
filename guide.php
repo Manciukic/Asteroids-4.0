@@ -23,7 +23,7 @@
       <h3>Abilit&agrave; speciali</h3>
         <ul>
           <li><img src="img/space.png" alt="Barra spaziatrice"/>: attiva il cannone laser per lanciare un proiettile nella direzione della navicella.</li>
-          <li><img src="img/shift.png" alt="Shift"/>: attiva il teletrasporto instabile per essere teletrasportato in un punto casuale della mappa. Tra un'attivazione e l'altra bisogna attendere il tempo di ricarica di 2 secondi. Attenzione: pu&ograve; causare la distruzione della navicella, usare con cautela. </li>
+          <li><img src="img/shift.png" alt="Shift"/>: attiva il teletrasporto instabile per essere teletrasportato in un punto casuale della mappa. Tra un'attivazione e l'altra bisogna attendere il tempo di ricarica di 2 secondi. Achtung: pu&ograve; causare la distruzione della navicella, usare con cautela. </li>
         </ul>
       <h3>Altro</h3>
         <ul>
