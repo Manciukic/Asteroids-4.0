@@ -4,7 +4,7 @@ function rad(deg){
 }
 
 // Classe di un oggetto di gioco generico
-function GameObject(width, height, spriteURI = ''){
+function GameObject(width, height, spriteURI){
   // that è l'istanza della classe (this) quando sono in una funzione callback
   var that = this;
 
@@ -18,7 +18,7 @@ function GameObject(width, height, spriteURI = ''){
   // L'immagine dell'oggetto nel gioco
   this.spriteURI = spriteURI;
   this.nSprite = 1;                 //quanti sprite ci sono nell'immagine
-  if (spriteURI != '')
+  if (spriteURI != null)
     this.sprite = mLoader.get(spriteURI);
   this.currentSprite = 0;           // parte sempre dal primo sprite dell'immagine
   this.spriteInterval = undefined;  // dipende dall'animazione
@@ -33,7 +33,7 @@ function GameObject(width, height, spriteURI = ''){
   //Imposta lo sprite
   this.changeSprite = function (spriteURI, width, height, nSprite, spriteInterval){
     this.spriteURI = spriteURI;
-    if (spriteURI != '')
+    if (spriteURI != null)
       this.sprite = mLoader.get(spriteURI);
     this.width = width;
     this.height = height;
@@ -347,7 +347,7 @@ function Ship(){
   this.teleportCooldown = 0; // timer per il tempo di attesa fra due teletrasporti consecutivi
 
   // imposta lo sprite  (spriteURI, width, height, nSprite, spriteInterval)
-  this.changeSprite(this.spriteURI, this.width, this.height, 2, '');
+  this.changeSprite(this.spriteURI, this.width, this.height, 2, null);
 
   // propulsori attivi
   var thrustOn = false;
