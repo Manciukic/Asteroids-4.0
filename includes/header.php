@@ -2,6 +2,9 @@
 <html lang='it'>
   <head>
     <title><?php if(isset($title)) echo $title;?></title>
+
+    <meta charset="UTF-8">
+    
     <meta name="author" content="Riccardo Mancini">
 
     <link rel="icon" type="image/png" href="img/favicon.ico"/>
