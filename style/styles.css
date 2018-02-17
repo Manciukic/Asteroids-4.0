@@ -69,9 +69,9 @@ nav li a:hover{
 main{
   width: 65%;
   min-width: 800px;
-  margin: 15vh auto 40px auto;
+  margin: 15vh auto 20px auto;
   /* lascia lo spazio in basso per il footer se la pagina è corta */
-  min-height: calc(85vh - 74px);
+  min-height: calc(85vh - 54px);
 }
 
 /* Footer */
