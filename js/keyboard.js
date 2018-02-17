@@ -27,6 +27,8 @@ function onKeyDownHandler(e){
   var key= (e.which!= null) ? e.which: e.keyCode; //Firefox-> e.which
   if (key >= 0 && key < 256)
     keyboard[key] = true;
+
+  e.preventDefault();         // Evita che la pagina venga scrollata
 }
 document.onkeydown = onKeyDownHandler;
 
@@ -35,5 +37,7 @@ function onKeyUpHandler(e){
   var key= (e.which!= null) ? e.which: e.keyCode; //Firefox-> e.which
   if (key >= 0 && key < 256)
       keyboard[key] = false;
+
+  e.preventDefault();         // Evita che la pagina venga scrollata
 }
 document.onkeyup = onKeyUpHandler;
