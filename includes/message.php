@@ -14,7 +14,4 @@ include_once("includes/header.php");
       </a>
     </div>
   </main>
-<?php
-  $isShortPage = true;
-  include_once("includes/footer.php");
-?>
+<?php include_once("includes/footer.php");?>

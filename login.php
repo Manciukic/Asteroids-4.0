@@ -33,7 +33,6 @@
   </script>
 <?php
     }
-    $isShortPage = true;
     include_once("includes/footer.php");
   }
 

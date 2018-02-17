@@ -21,6 +21,4 @@
       <p>Il codice &egrave; distribuito con <a target="_blank" href="https://www.apache.org/licenses/LICENSE-2.0">licenza Apache 2.0</a></p>
   </article>
 </main>
-<?php
-  include_once("includes/footer.php");
- ?>
+<?php include_once("includes/footer.php"); ?>

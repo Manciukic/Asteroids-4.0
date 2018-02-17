@@ -33,7 +33,4 @@
   highscore = <?php echo $loggedIn?$_SESSION["highscore"]:0;?>;
 </script>
 
-<?php
-  $isShortPage = true;
-  include_once("includes/footer.php");
-?>
+<?php include_once("includes/footer.php"); ?>

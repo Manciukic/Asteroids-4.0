@@ -29,6 +29,4 @@
     <p>La Privacy Policy di questo Sito &egrave; soggetta ad aggiornamenti; gli Utenti sono pertanto invitati a verificarne periodicamente il contenuto.</p>
   </article>
 </main>
-<?php
-  include_once("includes/footer.php");
- ?>
+<?php include_once("includes/footer.php"); ?>

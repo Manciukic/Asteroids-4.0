@@ -54,7 +54,5 @@
     </div>
   <?php } ?>
 
-</main> <!-- aperto all'interno di profile_title.php -->
-<?php
-  include_once("includes/footer.php");
- ?>
+</main> <!-- aperto all'interno di profile_title_and_menu.php -->
+<?php include_once("includes/footer.php"); ?>
