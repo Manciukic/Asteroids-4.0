@@ -1,7 +1,7 @@
 <?php
   session_start();
   $title = "Asteroids 4.0 - Privacy policy";
-  $section = 1;
+  $section = -1;
   $include_css = ['article'];
   include_once("includes/header.php");
 ?>
