@@ -15,10 +15,7 @@ header{
   margin-bottom: .5%;
   background-color: #1c0f28;
   color: white;
-  /* Ombra, compatibilità con vecchi browser */
   box-shadow: 0 2px 5px rgba(0,0,0,.26);
-  -moz-box-shadow: 0 2px 5px rgba(0,0,0,.26);
-  -webkit-box-shadow: 0 2px 5px rgba(0,0,0,.26);
 }
 
 header img{
@@ -74,7 +71,7 @@ main{
   width: 65%;
   min-width: 800px;
   margin: 15vh auto 40px auto;
-  /* lascia lo spazio in basso per il footer se la pagina è corta */ 
+  /* lascia lo spazio in basso per il footer se la pagina è corta */
   min-height: calc(85vh - 74px);
 }
 

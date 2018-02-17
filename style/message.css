@@ -5,11 +5,7 @@
   color: black;
   background-color: #c3a8dd;
   padding: 7%;
-
-  /* Ombra, compatibilità con vecchi browser */
   box-shadow: 0 2px 5px rgba(0,0,0,.26);
-  -moz-box-shadow: 0 2px 5px rgba(0,0,0,.26);
-  -webkit-box-shadow: 0 2px 5px rgba(0,0,0,.26);
 }
 
 .message a{
