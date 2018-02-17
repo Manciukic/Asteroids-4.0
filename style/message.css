@@ -8,8 +8,15 @@
   box-shadow: 0 2px 5px rgba(0,0,0,.26);
 }
 
+.message p{
+  margin-bottom: 3em;
+  margin-top: 0;
+  text-align: center;
+}
+
 .message a{
   display: block;
+  width: 75%;
   background-color: #261536;
   color: white;
   font-family: 'Press-Start-2P', Courier, monospace;
